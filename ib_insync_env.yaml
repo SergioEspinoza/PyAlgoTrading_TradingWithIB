@@ -104,10 +104,34 @@ dependencies:
   - zipp=2.2.0=py_0
   - zlib=1.2.11=h7b6447c_3
   - pip:
+    - boto3==1.13.7
+    - botocore==1.16.7
+    - chardet==3.0.4
+    - click==7.1.2
     - dataclasses==0.7
+    - datapackage==1.13.0
+    - docutils==0.15.2
+    - et-xmlfile==1.0.1
     - eventkit==0.8.6
     - ib-insync==0.9.59
+    - idna==2.9
+    - ijson==3.0.4
+    - isodate==0.6.0
+    - jdcal==1.4.1
+    - jmespath==0.9.5
+    - jsonlines==1.2.0
+    - jsonpointer==2.0
+    - linear-tsv==1.1.0
     - nest-asyncio==1.3.2
     - numpy==1.18.2
+    - openpyxl==3.0.3
+    - requests==2.23.0
+    - rfc3986==1.4.0
+    - s3transfer==0.3.3
+    - sqlalchemy==1.3.16
+    - tableschema==1.17.0
+    - tabulator==1.44.2
+    - unicodecsv==0.14.1
+    - urllib3==1.25.9
+    - xlrd==1.2.0
 prefix: /home/sergio/anaconda3/envs/ib_insync
-
