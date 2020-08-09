@@ -1,6 +1,6 @@
-<!-- This is an example of a bull put screener saved parameters file
-Loading this file will should have the effect of setting all parameters
-to the values included in "value" tags
+<!-- This is an example of a bull put screener parameters file
+Loading this file should have the effect of setting screener parameters
+to the values included in each of the "value" tags
 
 author: Sergio Espinoza
 sergio.espinoza.lopez@gmail.com
