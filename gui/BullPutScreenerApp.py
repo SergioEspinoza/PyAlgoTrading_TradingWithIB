@@ -1,18 +1,44 @@
 """
-This is a tkinter GUI App designed for financial derivative trading
-strategies creening using Interactive Brokers API / Data through ib_insync
-library
+Copyright 2020 Sergio Espinoza Lopez sergio.espinoza.lopez@gmail.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to
+do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+This is a tkinter GUI App designed for screening of financial option trading
+strategies.
+
+It uses ib_insync Interactive Brokers API
+(https://github.com/erdewit/ib_insync)
+
+Interactive Brokers TWS or IB Gateway alpplication needs to be installed and
+appropriate API permissions need to be configured along with relevant market
+data subscriptions.
 
 Derivative strategies available so far are:
 
 *Credit put verticals (bull put spreads)
 
-It would be possible to extend to more strategies through add ons
+It would be possible to extend to more strategies through add ons (not yet
+implemented)
 
 Look for conda environment ib_insync_env.yaml file for environment
 pre-requisites
-
-author: Sergio Espinoza sergio.espinoza.lopez@gmail.com
 """
 
 from ib_insync import *
@@ -21,120 +47,43 @@ import tkinter as tk
 
 from tkinter import ttk
 
-#from .screeners import *
+from SecurityFiltersEntryFrame import SecurityFiltersEntryFrame
 
+from StrategyFiltersEntryFrame import StrategyFiltersEntryFrame
+
+from MainMenu import MainMenu
 
 class MainWindow( tk.Tk ):
     def __init__( self, *args, **kargs ):
-
         super().__init__( *args, **kargs )
-
-        #self.utils = Utils()
-        self.userInputFrame = FilterOptionsFrame( self )
-        self.userInputFrame.pack()
-
-        self.config( menu = MainMenu( self ) )
-
-
-class MainMenu( tk.Menu ):
-    def __init__( self, container, **kwargs ):
-        super().__init__( container, **kwargs )
-
-
-        fileMenu = tk.Menu( self, tearoff= 0 )
-        fileMenu.add_command( label='Save screener...', command=self.saveScreener )
-        fileMenu.add_command( label='Load screener..', commmad=self.loadScreener )
-
-
-
-
-class FilterOptionsFrame( ttk.Frame ):
-
-    def __init__( self, container, **kargs ):
         """
             Create user input area, consists of:
 
-            * 'Screner parameter section with screener parameter entries:
-                    * min_market_cap: minimum market capital in USD Millions Dollars
-                    * constituents_slice: After minimum market cap ordering / filtering scan up to to this number of securities
-                    * min_option_volume: minimum average daily option volume
-                    * min_iv_rank: min 52 weeks Implied Volatility Rank (%)
-                    * min_days_to_earnings: minimum days to next earnings report
+            *'Connect / Disconnect Button'
 
-                Option strategy filters:
-                     * pct_under_px_range: .20  scan strikes under this % below market price for underlying
-                     * num_month_expiries: 3 monthly expires forward
-                     * max_loss: max loss
-                     * min_profit: min profit
+            *SecurityFiltersEntryFrame (for stage 1 filtering)
+                -Run Stage 1 Button
 
-            * 'Run Button'
-            * 'Status Label'
+            *StrategyFiltersEntryFrame ( for stage 2 filtering)
+                -Run Stage 2 Buttons
+
+            * 'Run All Button'
+            * 'Status Label' ( Connected / Disconnected )
         """
-        super().__init__( container, **kargs )
 
-
-        #separator
-        ttk.Separator( self, orient='horizontal').pack( fill='x', pady = (10,10) )
-        ttk.Label( self, text='Underlying filters' ).pack( fill = 'x', pady = ( 10, 10) )
-
-        #Market Cap
-        self.marketCapEntry = ParameterTextEntry( self, 'Min Market Cap ($USD M)' )
-        self.marketCapEntry.pack( fill='x', expand=True )
-
-        #constituents slice
-        self.constituentSlice = ParameterTextEntry( self, 'Contituents Slice' )
-        self.constituentSlice.pack( fill='x', expand=True )
-
-        #Min Option Volume
-        self.minOptionsVolume = ParameterTextEntry( self, 'Min Option Volume' )
-        self.minOptionsVolume.pack( fill='x', expand=True )
-
-        #Minimum IV
-        self.minOptionsVolume = ParameterTextEntry( self, 'Min IV rank' )
-        self.minOptionsVolume.pack( fill='x', expand=True )
-
-        #Minimum days to earnings
-        self.minOptionsVolume = ParameterTextEntry( self, 'Min days to earnings' )
-        self.minOptionsVolume.pack( fill='x', expand=True )
-
+        #self.utils = Utils()
+        self.securitiesEntryFrame = SecurityFiltersEntryFrame( self )
+        self.securitiesEntryFrame.pack( side = 'top' )
 
         #separator
         ttk.Separator( self, orient='horizontal' ).pack( fill='x',  pady = (10,10) )
         ttk.Label( self, text='Option Strategy filters' ).pack( fill='x', pady= ( 10, 10 ) )
 
-        #Percentage under price
-        self.marketCapEntry = ParameterTextEntry( self, 'Pct Under Price (0-99%)' )
-        self.marketCapEntry.pack( fill='x', expand=True )
-
-        #Number of monthly expiries
-        self.marketCapEntry = ParameterTextEntry( self, 'Monthly expiries' )
-        self.marketCapEntry.pack( fill='x', expand=True )
+        self.strategiesEntryFrame = StrategyFiltersEntryFrame( self )
+        self.strategiesEntryFrame.pack( side = 'top' )
 
 
-
-
-
-
-
-class ParameterTextEntry( ttk.Frame ):
-    """
-        Class constitutes screener parameter text entry with label,
-        result will be stored in 'entryVar' instance variable
-    """
-    def __init__( self, container, label, **kwargs ):
-        """
-            arguments:
-                container: parent
-                label: text entry description
-        """
-        super().__init__( container, **kwargs )
-
-        self.entryVar = tk.StringVar()
-
-        label = ttk.Label( self, text=label )
-        label.pack( side = 'left', padx = ( 0, 5) )
-        entry = ttk.Entry( self, textvariable = self.entryVar )
-        entry.pack( side = 'left', padx = ( 5, 0), fill='x', expand=True )
+        self.config( menu = MainMenu( self ) )
 
 
 if __name__ == "__main__":

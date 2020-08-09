@@ -1,18 +1,38 @@
 
 """
-    Frame subclass with labels and text entries for several security
-    screening parameters
+Copyright 2020 Sergio Espinoza Lopez sergio.espinoza.lopez@gmail.com
 
-    author: Sergio Espinoza
-    sergio.espinoza.lopez@gmail.com
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to
+do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+Frame subclass with labels and text entries for several security
+screening parameterss
 
 """
 
 import tkinter as tk
-from .SecurityFilters import SecurityFilters
+from tkinter import ttk
+from SecurityFilters import SecurityFilters
+from ParameterTextEntry import ParameterTextEntry
 
 
-class FilterParametersFrame( ttk.Frame ):
+class SecurityFiltersEntryFrame( ttk.Frame ):
     """
     'Screner parameter section with screener parameter entries:
             * min_market_cap: minimum market capital in USD Millions Dollars
@@ -53,11 +73,11 @@ class FilterParametersFrame( ttk.Frame ):
         self.minIVrankVar = self.minIVrankEntry.getParameterStringVar()
         self.minDaysToEarningsVar = self.minDaysToEarningsEntry.getParameterStringVar()
 
-        def getSecurityFilters( self ) -> SecurityFilters:
-            return SecurityFilters(
-                min_market_cap = self.marketCapEntryVar.get(),
-                constituents_slice = self.constituentSliceVar.get(),
-                min_option_volume = self.minOptionsVolumeVar.get(),
-                min_iv_rank = self.minIVrankVar.get(),
-                min_days_to_earnings = self.minDaysToEarningsVar.get()
-            )
+    def getSecurityFilters( self ) -> SecurityFilters:
+        return SecurityFilters(
+            min_market_cap = self.marketCapEntryVar.get(),
+            constituents_slice = self.constituentSliceVar.get(),
+            min_option_volume = self.minOptionsVolumeVar.get(),
+            min_iv_rank = self.minIVrankVar.get(),
+            min_days_to_earnings = self.minDaysToEarningsVar.get()
+        )
