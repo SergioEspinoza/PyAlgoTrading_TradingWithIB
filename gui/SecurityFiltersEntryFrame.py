@@ -46,8 +46,11 @@ class SecurityFiltersEntryFrame( ttk.Frame ):
 
         super().__init__( container, **kargs )
 
+
+        ttk.Label( self, text='Underlying filters' ).pack( fill='x', pady= ( 10, 10 ) )
+
         #Market Cap
-        self.marketCapEntry = ParameterTextEntry( self, 'Min Market Cap ($USD M)' )
+        self.marketCapEntry = ParameterTextEntry( self, 'Min Market Cap (USDM$)' )
         self.marketCapEntry.pack( fill='x', expand=True )
 
         #constituents slice

@@ -77,13 +77,17 @@ class MainWindow( tk.Tk ):
 
         #separator
         ttk.Separator( self, orient='horizontal' ).pack( fill='x',  pady = (10,10) )
-        ttk.Label( self, text='Option Strategy filters' ).pack( fill='x', pady= ( 10, 10 ) )
 
         self.strategiesEntryFrame = StrategyFiltersEntryFrame( self )
         self.strategiesEntryFrame.pack( side = 'top' )
 
+        self.underlyingFilters = SecurityFilters()
+        self.strategyFilters = StrategyFilters()
 
         self.config( menu = MainMenu( self ) )
+
+        def setUnderlyingFilters( self, parameters : SecurityFilters ):
+            self.underlyingFilters = parameters
 
 
 if __name__ == "__main__":
@@ -96,6 +100,6 @@ if __name__ == "__main__":
     #resize implementation pending
     window.resizable( False, False )
 
-    window.geometry( '400x600' )
+    window.geometry( '400x300' )
 
     window.mainloop()

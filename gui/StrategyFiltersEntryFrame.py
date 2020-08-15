@@ -24,6 +24,7 @@ THE SOFTWARE.
 """
 
 import tkinter as tk
+from tkinter import ttk
 from ParameterTextEntry import ParameterTextEntry
 from StrategyFilters import StrategyFilters
 
@@ -39,6 +40,8 @@ class StrategyFiltersEntryFrame( tk.Frame ):
              * min_profit: min profit
          """
         super().__init__( container, **kwargs )
+
+        ttk.Label( self, text='Option Strategy filters' ).pack( fill='x', pady= ( 10, 10 ) )
 
         #Percentage under price
         self.pctUnderPxEntry = ParameterTextEntry( self, 'Pct Under Price (0-99%)' )

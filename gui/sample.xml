@@ -8,84 +8,76 @@ sergio.espinoza.lopez@gmail.com
 <?xml version="1.0" encoding="UTF-8"?>
 <screener>
   <!-- bul put screener parameter file -->
-  <name>Bull Put</name>
+  <BullPutScreener>
 
   <!-- underlying screening parameters -->
   <underlyings>
-  <parameter>
-    <!-- minimum market capital in USDM -->
-    <name>Market Cap</name>
-    <value>5.95</value>
-  </parameter>
+    <parameter>
+      <!-- minimum market capital in USDM -->
+      <name>MarketCap</name>
+      <value>5.95</value>
+    </parameter>
 
-  <parameter>
-    <!-- max number of constituents to consider for
-      further scanning, after ordering by market Cap,
-       if = 0 then ignore  -->
-    <name>Constituents Slice</name>
-    <value>0</value>
-  </parameter>
+    <parameter>
+      <!-- max number of constituents to consider for
+        further scanning, after ordering by market Cap,
+         if = 0 then ignore  -->
+      <name>ConstituentsSlice</name>
+      <value>0</value>
+    </parameter>
 
-  <parameter>
-    <!-- Minimmum average daily option volume
-          multiples of 1k  -->
-    <name>Min Option Volume</name>
-    <value>10</value>
-  </parameter>
+    <parameter>
+      <!-- Minimmum average daily option volume
+            multiples of 1k  -->
+      <name>MinOptionVolume</name>
+      <value>10</value>
+    </parameter>
+    
+    <parameter>
+      <!-- min 52 weeks Implied Volatility Rank (%)  -->
+      <name>MinIVRank</name>
+      <value>30</value>
+    </parameter>
 
-  <parameter>
-    <!-- max number of constituents to consider for
-      further scanning, after ordering by market Cap,
-       if = 0 then ignore  -->
-    <name>Constituents Slice</name>
-    <value>0</value>
-  </parameter>
+    <parameter>
+      <!-- Minimum days to nenxt earning release -->
+      <name>MinDaysToEarnings</name>
+      <value>30</value>
+    </parameter>
 
-  <parameter>
-    <!-- min 52 weeks Implied Volatility Rank (%)  -->
-    <name>Min IV Rank</name>
-    <value>30</value>
-  </parameter>
-
-  <parameter>
-    <!-- Minimum days to nenxt earning release -->
-    <name>Min Days To Earnings</name>
-    <value>30</value>
-  </parameter>
-
-</underlyings>
+  </underlyings>
 
 <!-- Strategy screening paramters -->
-<strategy>
+  <strategy>
 
-  <parameter>
-    <!-- scan strikes under this % below
-                 market price for underlying -->
-    <name>Pct Under Px</name>
-    <value>15</value>
-  </parameter>
+    <parameter>
+      <!-- scan strikes under this % below
+                   market price for underlying -->
+      <name>PctUnderPx</name>
+      <value>15</value>
+    </parameter>
 
-  <parameter>
-    <!-- Number of monthly expiries to scan -->
-    <name>Num Month Expiries</name>
-    <value>0</value>
-  </parameter>
+    <parameter>
+      <!-- Number of monthly expiries to scan -->
+      <name>NumMonthExpiries</name>
+      <value>0</value>
+    </parameter>
 
-  <parameter>
-    <!-- Maximum Loss  -->
-    <name>Max Loss</name>
-    <value>0</value>
-  </parameter>
+    <parameter>
+      <!-- Maximum Loss  -->
+      <name>MaxLoss</name>
+      <value>0</value>
+    </parameter>
 
-  <parameter>
-    <!-- Minimum Strategy profit -->
-    <name>Min Profit</name>
-    <value>0</value>
-  </parameter>
+    <parameter>
+      <!-- Minimum Strategy profit -->
+      <name>MinProfit</name>
+      <value>0</value>
+    </parameter>
 
 
-</strategy>
+  </strategy>
 
-</screener>
+</BullPutScreener>
 
 </xml>

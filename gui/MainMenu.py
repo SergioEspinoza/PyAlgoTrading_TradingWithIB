@@ -25,52 +25,72 @@
 """
 
 import tkinter as tk
-from tkinter import filedialog 
+from tkinter import filedialog
+import logging
+
+import xml.etree.ElementTree as ET
+
+from BullPutScreenerApp import MainWindow
 
 
 class MainMenu( tk.Menu ):
+
+    screenerApp : MainWindow
+
+
     def __init__( self, container, **kwargs ):
-        super().__init__( container, **kwargs )
+        super().__init__( container, tearoff= 0, **kwargs )
+
+        self.screenerApp = container
+
+        fileMenu = tk.Menu( self, tearoff = 0 )
 
 
-        fileMenu = tk.Menu( self, tearoff= 0 )
-        fileMenu.add_command( label='Save screener...',
-                              command=self.showSaveScreenerDialog )
         fileMenu.add_command( label='Load screener..',
                               command=self.showLoadScreenerDialog )
 
+        fileMenu.add_command( label='Save screener...',
+                                command=self.showSaveScreenerDialog )
+
+        super().add_cascade( menu=fileMenu, label="File" )
+
     def showSaveScreenerDialog( self ):
-        tkFileDialog.asksaveasfilename( filetypes=[( "XML", "*.xml" )] )
+        filedialog.asksaveasfilename( filetypes=[( "XML", "*.xml" )] )
 
 
     def showLoadScreenerDialog( self ):
-        tkFileDialog.askopenfilename( filetypes=[( "XML", "*.xml" )] )
+        filename = filedialog.askopenfilename( filetypes=[( "XML", "*.xml" )] )
+        print( "load xml file {}".format( filename ) )
+
+        loadScreener( filename )
 
 
-    def saveScreener( self, filename ):
+    def loadScreenerFile( self, filename ):
+        """
+            load screener parameters from xml file
+        """
+        pass
+
+    def saveScreenerFile( self, filename ):
         """
             arguments:
                 filename: xml file output name
             Save current bull put screener settings into xml format
-            file:
+            file format:
             <?xml version="1.0" encoding="UTF-8"?>
-                < parameter >
-                    <name>"parameter1Name"</name>
-                    <value>float</value>
-                < /parameter >
+                < screener >
 
-                < parameter >
-                    < name>
-                < /parameter >
+                    < parameter >
+                        <name>"parameter1Name"</name>
+                        <value>float</value>
+                    < /parameter >
+
+                    < parameter >
+                        < name>
+                    < /parameter >
+                < /screener >
                     ...
             </xml>
         """
         #TODO
-        pass
-
-    def loadScreener( self, filename ):
-        """
-        TODO:
-            load screener parameters from xml file
-        """
         pass
