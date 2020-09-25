@@ -37,33 +37,47 @@ class ParameterXMLParser():
         self.securityFilters = None
         self.strategyFilters = None
 
-    def parseXmlFile( self, filename ):
+
+    def loadXmlFile( self, filename ) -> bool :
         """
         Parse parameter values xml file and store result
         into instance variables 'securityFilters' and 'strategyFilters'
+
+        return: True if parser success
         """
 
         tree = ET.parse( filename )
 
         root = tree.getroot()
-
+StrategyFilters
         #get bull put screen parameters
         for screener in root.findall( 'BullPutScreener' ):
 
-            underlyingFilterParameters = screener.find( 'underlyings' )
-            strategyFilterParameters = screener.find( 'strategy ' )
+            underlyingFiltersElem = screener.find( 'underlyings' )
+
+            if underlyingFiltersElem is not None:
+                SecurityFilters.loadFromXmlElem()
 
 
-            for parameter in strategyFilterParameters.findall( 'parameter' ):
-                if parameter == 'PctUnderPx':
-                    pass
-                elif parameter == 'NumMonthExpiries':
-                    pass
-                elif parameter == 'MaxLoss':
-                    pass
-                elif parameter == 'MinProfit':
-                    pass
-                else:
-                    logging.warning(
-                    'xml screener parameter \
-                    not recognized'.format( parameter ) )
+
+                # self.minMarketCap = minMarketCap,
+                # self.constituentsSlice = constituentsSlice ,
+                # self.minOptionVolume = minOptionVolume,
+                # self.minIvRank = minIvRank,
+                # self.minDaysToEarnigns = minDaysToEarnigns
+
+
+
+            # self.pctUnderPxRange = pctUnderPxRange
+            # self.numMonthlyExpiries = numMonthlyExpiries
+            # self.maxLoss = maxLoss
+            # self.minProfit = minProfit
+
+            strategyFiltersElem = screener.find( 'strategy ')
+
+            if strategyFiltersElem is not None:
+
+
+
+if __name__ = '__main__':
+    print( 'Invoking unit test for ParameterXMLParser class' )

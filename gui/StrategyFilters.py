@@ -28,22 +28,99 @@ from dataclasses import dataclass
 @dataclass
 class StrategyFilters():
     """
-    Option strategy filters:
-         * pct_under_px_range: .20  scan strikes under this % below market price for underlying
-         * num_month_expiries: 3 monthly expires forward
-         * max_loss: max loss
-         * min_profit: min profit
-     """
+        Option strategy filter values
+    """
 
-    #scan strikes under this % below market price for underlying
-    pct_under_px_range: float
-    #number of monthly expires forward to scan (i.e. if today is 1st Aug
-    # then motnhly expiries up to - but not including - November will be
-    # scanned )
-    num_month_expiries: int
-    #Maximum loss allowed, in a vertical spread strategy (like bull put spread)
-    #this should influence maximum allowed distance between strikes
-    max_loss: float
-    #Minimum Profit of the strategy, case of credit spread this would be
-    # the minimum premium value.
-    min_profit: float
+    #short descpription for each stored filter parameter
+    shortDesc: Dict[ str, str ] =
+    {
+        "pctUnderPxRange" : "Limit scan under Px (%)",
+        "numMonthlyExpiries" : "No. mothly expiries",
+        "maxLoss" : "Max loss",
+        "minProfit" : "Min Profit"
+    }
+
+
+    # storing tool tips on parameter entries
+
+    toolTips : Dict[ str, str ] = {
+        "pctUnderPxRange" : "scan strikes under this % below market price for \
+                            underlying",
+        "numMonthlyExpiries" : "number of monthly expires forward to scan",
+        "maxLoss" : "Maximum loss allowed",
+        "minProfit" : "Minimum Profit of the strategy"
+    }
+
+
+    def __init__( self, pctUnderPxRange : float = 20,
+                        numMonthlyExpiries : int = 3,
+                        maxLoss : float = 2000,
+                        minProfit : float = 200 ):
+    """
+        parameters:
+
+        pctUnderPxRange:  scan strikes under this % below market price for underlying
+
+
+        numMonthlyExpiries : number of monthly expires forward to scan
+                             (i.e. if today is 1st Aug , then motnhly expiries
+                              up to - but not including - November will be
+                              scanned ),
+
+        maxLoss: Maximum loss allowed, in a vertical spread strategy
+                  (like bull put spread) this should influence maximum allowed
+                  distance between strikes,
+
+        minProfit : Minimum Profit of the strategy, case of credit spread
+                     this would be the minimum premium value
+    """
+        self.pctUnderPxRange = pctUnderPxRange,
+        self.numMonthlyExpiries = numMonthlyExpiries,
+        self.maxLoss = maxLoss,
+        self.minProfit = minProfit
+
+
+    def loadFromXml( self, elementSubTree : TypeVar[Element]  ):
+        """
+            Initialize using xml subtree of 'underlyings' tag
+
+            arguments
+                elementSubTree: xml 'element' including the 'strategy'
+                                tag and its sub-tree
+        """
+
+        strategyEl = elementSubTree.find( 'strategy' )
+
+        if strategyEl is not None:
+            for parameter in strategyEl.findall ( 'parameter' ):
+                nameEl = parameter.find( 'name' )
+                valueEl = parameter.find( 'value' )
+                try:
+                    #set value
+                    setattribute( nameEl.text, valueEl.text )
+
+                except:
+                    logging.error( 'Unable to set {} parameter value'.format( xmlTagName ) )
+
+    def saveToXml( self, elementSubTree : TypeVar[ElementTree] ):
+    """
+        Save to xml tree Element
+            arguments
+                elementTree: mpty element sub-tree at which to save parameters.
+                         'strategy' and sub-tree will be created
+    """
+        strategyEl = elementSubTree.Element( 'strategy' )
+
+        for attribute in dir(self):
+
+            value = getattribute( self,  parameter )
+            #create new parameter
+            parElement = elementSubTree.Element( 'parameter' )
+
+            #name element
+            parElement.Element( 'name' )
+            parElement.text = attribute
+
+            #assign value
+            valueEl = elementTree.subElement( 'value' )
+            valueEl.text = getattribute( self, attribute )

@@ -14,7 +14,7 @@ sergio.espinoza.lopez@gmail.com
   <underlyings>
     <parameter>
       <!-- minimum market capital in USDM -->
-      <name>MarketCap</name>
+      <name>minMarketCap</name>
       <value>5.95</value>
     </parameter>
 
@@ -22,28 +22,30 @@ sergio.espinoza.lopez@gmail.com
       <!-- max number of constituents to consider for
         further scanning, after ordering by market Cap,
          if = 0 then ignore  -->
-      <name>ConstituentsSlice</name>
+      <name>constituentsSlice</name>
       <value>0</value>
     </parameter>
 
     <parameter>
       <!-- Minimmum average daily option volume
             multiples of 1k  -->
-      <name>MinOptionVolume</name>
+      <name>minOptionVolume</name>
       <value>10</value>
-    </parameter>
-    
-    <parameter>
-      <!-- min 52 weeks Implied Volatility Rank (%)  -->
-      <name>MinIVRank</name>
-      <value>30</value>
     </parameter>
 
     <parameter>
+      <!-- min 52 weeks Implied Volatility Rank (%)  -->
+      <name>minIVRank</name>
+      <value>30</value>
+    </parameter>MinProfit
+
+    <parameter>
       <!-- Minimum days to nenxt earning release -->
-      <name>MinDaysToEarnings</name>
+      <name>minDaysToEarnings</name>
       <value>30</value>
     </parameter>
+
+
 
   </underlyings>
 
@@ -53,28 +55,27 @@ sergio.espinoza.lopez@gmail.com
     <parameter>
       <!-- scan strikes under this % below
                    market price for underlying -->
-      <name>PctUnderPx</name>
+      <name>pctUnderPx</name>
       <value>15</value>
     </parameter>
 
     <parameter>
       <!-- Number of monthly expiries to scan -->
-      <name>NumMonthExpiries</name>
+      <name>numMonthlyExpiries</name>
       <value>0</value>
     </parameter>
 
     <parameter>
       <!-- Maximum Loss  -->
-      <name>MaxLoss</name>
+      <name>maxLoss</name>
       <value>0</value>
     </parameter>
 
     <parameter>
       <!-- Minimum Strategy profit -->
-      <name>MinProfit</name>
+      <name>minProfit</name>
       <value>0</value>
     </parameter>
-
 
   </strategy>
 

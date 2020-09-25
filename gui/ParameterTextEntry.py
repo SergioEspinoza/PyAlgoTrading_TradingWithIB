@@ -35,7 +35,7 @@ class ParameterTextEntry( ttk.Frame ):
         Class constitutes screener parameter text entry with label,
         result will be stored in 'entryVar' instance variable
     """
-    def __init__( self, container, label, **kwargs ):
+    def __init__( self, container, name : str, label : str, **kwargs ):
         """
             arguments:
                 container: parent
@@ -49,6 +49,8 @@ class ParameterTextEntry( ttk.Frame ):
         label.pack( side = 'left', padx = ( 0, 5) )
         entry = ttk.Entry( self, textvariable = self.stringEntryVar )
         entry.pack( side = 'left', padx = ( 5, 0), fill='x', expand=True )
+
+        self.m_paramName = name
 
     def getParameterStringVar( self ) -> tk.StringVar:
         return self.stringEntryVar

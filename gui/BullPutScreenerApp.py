@@ -54,6 +54,7 @@ from StrategyFiltersEntryFrame import StrategyFiltersEntryFrame
 from MainMenu import MainMenu
 
 class MainWindow( tk.Tk ):
+
     def __init__( self, *args, **kargs ):
         super().__init__( *args, **kargs )
         """
@@ -67,27 +68,24 @@ class MainWindow( tk.Tk ):
             *StrategyFiltersEntryFrame ( for stage 2 filtering)
                 -Run Stage 2 Buttons
 
-            * 'Run All Button'
+            * 'Run' Button
             * 'Status Label' ( Connected / Disconnected )
         """
 
-        #self.utils = Utils()
-        self.securitiesEntryFrame = SecurityFiltersEntryFrame( self )
+        #TODO: Initialize via defaultParameters.xml or something similar
+        #load defaults for now
+        self.securitiesEntryFrame = SecurityFiltersEntryFrame( self,  )
         self.securitiesEntryFrame.pack( side = 'top' )
 
         #separator
         ttk.Separator( self, orient='horizontal' ).pack( fill='x',  pady = (10,10) )
 
+        #TODO: Initialize via defaultParameters.xml or something similar
+        #laod defaults for now
         self.strategiesEntryFrame = StrategyFiltersEntryFrame( self )
         self.strategiesEntryFrame.pack( side = 'top' )
 
-        self.underlyingFilters = SecurityFilters()
-        self.strategyFilters = StrategyFilters()
-
         self.config( menu = MainMenu( self ) )
-
-        def setUnderlyingFilters( self, parameters : SecurityFilters ):
-            self.underlyingFilters = parameters
 
 
 if __name__ == "__main__":

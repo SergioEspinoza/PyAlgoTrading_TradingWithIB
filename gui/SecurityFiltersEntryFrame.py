@@ -29,6 +29,7 @@ screening parameterss
 import tkinter as tk
 from tkinter import ttk
 from SecurityFilters import SecurityFilters
+from StrategyFilters import StrategyFilters
 from ParameterTextEntry import ParameterTextEntry
 
 
@@ -36,51 +37,48 @@ class SecurityFiltersEntryFrame( ttk.Frame ):
     """
     'Screner parameter section with screener parameter entries:
             * min_market_cap: minimum market capital in USD Millions Dollars
-            * constituents_slice: After minimum market cap ordering / filtering scan up to to this number of securities
+            * constituents_slice: After minimum markgetParameterStringVaret cap
+                ordering / filtering scan up to to this number of securities
             * min_option_volume: minimum average daily option volume
             * min_iv_rank: min 52 weeks Implied Volatility Rank (%)
             * min_days_to_earnings: minimum days to next earnings report
     """
 
-    def __init__( self, container, **kargs ):
+    def __init__( self, container,
+                securityFilters : TypeVar[ SecurityFilters]  = None, **kargs ):
 
         super().__init__( container, **kargs )
 
 
         ttk.Label( self, text='Underlying filters' ).pack( fill='x', pady= ( 10, 10 ) )
 
-        #Market Cap
-        self.marketCapEntry = ParameterTextEntry( self, 'Min Market Cap (USDM$)' )
-        self.marketCapEntry.pack( fill='x', expand=True )
 
-        #constituents slice
-        self.constituentSliceEntry = ParameterTextEntry( self, 'Contituents Slice' )
-        self.constituentSliceEntry.pack( fill='x', expand=True )
+        if securityFilters is None:
+            #give it default values
+            self.m_securityFilters = SecurityFilters()
 
-        #Min Option Volume
-        self.minOptionsVolumeEntry = ParameterTextEntry( self, 'Min Option Volume' )
-        self.minOptionsVolumeEntry.pack( fill='x', expand=True )
+        else:
+            #store given parameters
+            self.m_securityFilters = securityFilters
 
-        #Minimum IV
-        self.minIVrankEntry = ParameterTextEntry( self, 'Min IV rank' )
-        self.minIVrankEntry.pack( fill='x', expand=True )
+            #create filter entry fields
+        for ( parameterName, shortDesc ) in SecurityFilters.shortDesc :
+            #TODO add callback for update on m_securityFilter
+            parameterEntry = ParameterTextEntry( self, parameterName, shortDesc )
+            parameterEntry.pack( fill='x', expand=True )
+            self.m_parameterEntryList.append( parameterEntry )
 
-        #Minimum days to earnings
-        self.minDaysToEarningsEntry = ParameterTextEntry( self, 'Min days to earnings' )
-        self.minDaysToEarningsEntry.pack( fill='x', expand=True )
+    def _updateSecurityFiltersObject( self ):
+        """
+            Update m_securityFilter member with parameter entry values
+        """
+        for entry in self.m_parameterEntryList
+            value = entry.getParameterStringVar().get()
+            name = entry.m_paramName
+            setattribute( self.m_securityFilters, name, value )
 
-        #get entry variables
-        self.marketCapEntryVar = self.marketCapEntry.getParameterStringVar()
-        self.constituentSliceVar = self.constituentSliceEntry.getParameterStringVar()
-        self.minOptionsVolumeVar =  self.minOptionsVolumeEntry.getParameterStringVar()
-        self.minIVrankVar = self.minIVrankEntry.getParameterStringVar()
-        self.minDaysToEarningsVar = self.minDaysToEarningsEntry.getParameterStringVar()
 
-    def getSecurityFilters( self ) -> SecurityFilters:
-        return SecurityFilters(
-            min_market_cap = self.marketCapEntryVar.get(),
-            constituents_slice = self.constituentSliceVar.get(),
-            min_option_volume = self.minOptionsVolumeVar.get(),
-            min_iv_rank = self.minIVrankVar.get(),
-            min_days_to_earnings = self.minDaysToEarningsVar.get()
-        )
+
+    def getSecurityFiltersObject( self ) -> SecurityFilters:
+        self._updateSecurityFiltersObject()
+        return self.m_securityFilters

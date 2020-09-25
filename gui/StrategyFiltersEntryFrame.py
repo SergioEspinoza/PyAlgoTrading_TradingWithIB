@@ -31,7 +31,8 @@ from StrategyFilters import StrategyFilters
 
 class StrategyFiltersEntryFrame( tk.Frame ):
 
-    def __init__( self, container, **kwargs):
+    def __init__( self, container,
+                strategyFilters : TypeVar[ StrategyFilters ] = None, **kwargs):
         """
         Option strategy filters:
              * pct_under_px_range: .20  scan strikes under this % below market price for underlying
@@ -43,32 +44,29 @@ class StrategyFiltersEntryFrame( tk.Frame ):
 
         ttk.Label( self, text='Option Strategy filters' ).pack( fill='x', pady= ( 10, 10 ) )
 
-        #Percentage under price
-        self.pctUnderPxEntry = ParameterTextEntry( self, 'Pct Under Price (0-99%)' )
-        self.pctUnderPxEntry.pack( fill='x', expand=True )
+        if strategyFilters is None:
+            #set default values
+            self.m_strategyFilters = StrategyFilters()
+        else:
+            self.m_strategyFilters = strategyFilters
 
-        #Number of monthly expiries
-        self.monthlyExpiriesEntry = ParameterTextEntry( self, 'Monthly expiries' )
-        self.monthlyExpiriesEntry.pack( fill='x', expand=True )
+        for ( parameter, shortDesc ) in StrategyFilters.shortDesc:
+            parameterEntry = ParameterTextEntry( self, parameterName, shortDesc )
+            parameterEntry.pack( fill='x', expand=True )
+            self.m_parameterEntryList.append( parameterEntry )
 
-        #Max loss
-        self.maxLossEntry = ParameterTextEntry( self, 'Max loss' )
-        self.maxLossEntry.pack( fill='x', expand=True )
 
-        #Min Profit
-        self.minProfitEntry = ParameterTextEntry( self, 'Min Profit' )
-        self.minProfitEntry.pack( fill='x', expand=True )
+    def _updateStrategyFiltersObject( self ):
+        """
+            Update m_securityFilter member with parameter entry values
+        """
+        for entry in self.m_parameterEntryList
+            value = entry.getParameterStringVar().get()
+            name = entry.m_paramName
+            setattribute( self.m_strategyFilters, name, value )
 
-        #store string variables
-        self.pctUnderPxEntryVar = self.pctUnderPxEntry.getParameterStringVar()
-        self.monthlyExpiriesEntryVar = self.monthlyExpiriesEntry.getParameterStringVar()
-        self.maxLossEntryVar = self.maxLossEntry.getParameterStringVar()
-        self.minProfitEntryVar = self.minProfitEntry.getParameterStringVar()
 
-    def getStrategyFilters( self )-> StrategyFilters:
-        return StrategyFilters(
-             pct_under_px_range = float(self.pctUnderPxEntryVar.get()),
-             num_month_expiries = int( self.monthlyExpiriesEntryVar.get() ),
-             max_loss = int(self.maxLossEntryVar.get()),
-             min_profit = int( minProfitEntryVar.get())
-        )
+
+    def getSecurityFiltersObject( self ) -> StrategyFilters:
+        self._updateStrategyFiltersObject()
+        return self.m_strategyFilters

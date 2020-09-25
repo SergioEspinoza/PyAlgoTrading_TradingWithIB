@@ -26,17 +26,11 @@ THE SOFTWARE.
   to TWS gateway
 """
 from dataclasses import dataclass
-
 import tkinter as tk
-
 from tkinter import ttk
-
 from tkinter import messagebox
-
 from ib_insync import *
-
 from datetime import date
-
 import asyncio
 
 @dataclass
