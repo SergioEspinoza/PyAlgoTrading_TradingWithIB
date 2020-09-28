@@ -27,17 +27,18 @@ THE SOFTWARE.
 from dataclasses import dataclass
 from typing import ClassVar
 
-from typing import Dict
+from typing import Dict, TypeVar, ClassVar
 
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import ElementTree, Element
 
-@dataclass
+
+Element_t = TypeVar( "Element")
+
 class SecurityFilters:
 
     #short descpriptions for each filter parameter
-    shortDesc: ClassVar[Dict[ str, str ] ] =
-    {
+    shortDesc : ClassVar[ Dict[ str, str ] ] = {
         "minMarketCap" : "Scan % under Px",
         "constituentsSlice" : "No. mothly expiries",
         "minOptionVolume" : "Max loss",
@@ -49,7 +50,7 @@ class SecurityFilters:
 
 
     # storing tool tips on parameter entries
-    toolTips : ClassVar[Dict[ str, str ]] = {
+    toolTips : ClassVar[ Dict[ str, str ] ] = {
         "minMarketCap" : "Minimum market capital in USDM$",
 
         "constituentsSlice" : "Limit scaning to this number \
@@ -87,15 +88,15 @@ class SecurityFilters:
             minDaysToEarnigns: minimum days to next earnings report
 
         """
-            self.minMarketCap = minMarketCap,
-            self.constituentsSlice = constituentsSlice ,
-            self.minOptionVolume = minOptionVolume,
-            self.minIvRank = minIvRank,
-            self.minDaysToEarnigns = minDaysToEarnigns
+        self.minMarketCap = minMarketCap
+        self.constituentsSlice = constituentsSlice
+        self.minOptionVolume = minOptionVolume
+        self.minIvRank = minIvRank
+        self.minDaysToEarnigns = minDaysToEarnigns
 
 
 
-    def loadFromXmlElem( self, elementSubTree : TypeVar[Element]  ):
+    def loadFromXmlElem( self, elementSubTree : Element_t  ):
         """
             Initialize using xml subtree (Element) of 'underlyings' tag
 
@@ -119,13 +120,13 @@ class SecurityFilters:
                     logging.error( 'parameter not found, unable to load values from \
                                  xml' )
 
-    def saveToXmlElem( self, elementSubTree : TypeVar[Element] ):
-    """
+    def saveToXmlElem( self, elementSubTree : Element_t ):
+        """
         Save to xml tree Element
             arguments
                 element: Empty element sub-tree at which to save parameters.
                          'underlyings' and sub-tree will be created
-    """
+        """
         underlyingsEl = elementSubTree.Element( 'underlyings' )
 
         for attributeName  in dir(self):
@@ -134,7 +135,7 @@ class SecurityFilters:
             parameterElement = underlyingsEl.Element( 'parameter' )
 
             nameElement = parameterElement.Element( 'name' )
-            nameElement.text = xmlTag
+            nameElement.text = attributeName
             #assign value
             valueEl = parameterElement.subElement( 'value' )
-            valueEl.text = getattribute( self, parameter )
+            valueEl.text = attributeValue

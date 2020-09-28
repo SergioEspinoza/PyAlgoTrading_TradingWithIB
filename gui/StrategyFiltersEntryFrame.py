@@ -28,11 +28,16 @@ from tkinter import ttk
 from ParameterTextEntry import ParameterTextEntry
 from StrategyFilters import StrategyFilters
 
+from typing import TypeVar
+
+
+StrategyFilters_t = TypeVar("StrategyFilters")
+
 
 class StrategyFiltersEntryFrame( tk.Frame ):
 
     def __init__( self, container,
-                strategyFilters : TypeVar[ StrategyFilters ] = None, **kwargs):
+                strategyFilters : StrategyFilters_t = None, **kwargs):
         """
         Option strategy filters:
              * pct_under_px_range: .20  scan strikes under this % below market price for underlying
@@ -50,8 +55,10 @@ class StrategyFiltersEntryFrame( tk.Frame ):
         else:
             self.m_strategyFilters = strategyFilters
 
-        for ( parameter, shortDesc ) in StrategyFilters.shortDesc:
-            parameterEntry = ParameterTextEntry( self, parameterName, shortDesc )
+        self.m_parameterEntryList = []
+
+        for ( name, shortDesc ) in StrategyFilters.shortDesc.items():
+            parameterEntry = ParameterTextEntry( self, name, shortDesc )
             parameterEntry.pack( fill='x', expand=True )
             self.m_parameterEntryList.append( parameterEntry )
 
@@ -60,13 +67,13 @@ class StrategyFiltersEntryFrame( tk.Frame ):
         """
             Update m_securityFilter member with parameter entry values
         """
-        for entry in self.m_parameterEntryList
+        for entry in self.m_parameterEntryList:
             value = entry.getParameterStringVar().get()
             name = entry.m_paramName
             setattribute( self.m_strategyFilters, name, value )
 
 
 
-    def getSecurityFiltersObject( self ) -> StrategyFilters:
+    def getSecurityFiltersObject( self ) -> StrategyFilters_t:
         self._updateStrategyFiltersObject()
         return self.m_strategyFilters

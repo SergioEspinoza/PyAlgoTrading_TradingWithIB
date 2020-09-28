@@ -32,6 +32,9 @@ from SecurityFilters import SecurityFilters
 from StrategyFilters import StrategyFilters
 from ParameterTextEntry import ParameterTextEntry
 
+from typing import TypeVar
+
+SecurityFilters_t = TypeVar( "SecurityFilters" )
 
 class SecurityFiltersEntryFrame( ttk.Frame ):
     """
@@ -45,7 +48,7 @@ class SecurityFiltersEntryFrame( ttk.Frame ):
     """
 
     def __init__( self, container,
-                securityFilters : TypeVar[ SecurityFilters]  = None, **kargs ):
+                securityFilters : SecurityFilters_t  = None, **kargs ):
 
         super().__init__( container, **kargs )
 
@@ -56,15 +59,15 @@ class SecurityFiltersEntryFrame( ttk.Frame ):
         if securityFilters is None:
             #give it default values
             self.m_securityFilters = SecurityFilters()
-
         else:
             #store given parameters
             self.m_securityFilters = securityFilters
 
+        self.m_parameterEntryList = []
+
             #create filter entry fields
-        for ( parameterName, shortDesc ) in SecurityFilters.shortDesc :
-            #TODO add callback for update on m_securityFilter
-            parameterEntry = ParameterTextEntry( self, parameterName, shortDesc )
+        for ( name, desc ) in SecurityFilters.shortDesc.items():
+            parameterEntry = ParameterTextEntry( self, name, desc )
             parameterEntry.pack( fill='x', expand=True )
             self.m_parameterEntryList.append( parameterEntry )
 
@@ -72,13 +75,13 @@ class SecurityFiltersEntryFrame( ttk.Frame ):
         """
             Update m_securityFilter member with parameter entry values
         """
-        for entry in self.m_parameterEntryList
+        for entry in self.m_parameterEntryList:
             value = entry.getParameterStringVar().get()
             name = entry.m_paramName
             setattribute( self.m_securityFilters, name, value )
 
 
 
-    def getSecurityFiltersObject( self ) -> SecurityFilters:
+    def getSecurityFiltersObject( self ) -> SecurityFilters_t:
         self._updateSecurityFiltersObject()
         return self.m_securityFilters

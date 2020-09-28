@@ -24,16 +24,22 @@ THE SOFTWARE.
 """
 
 from dataclasses import dataclass
+from typing import TypeVar, Dict, ClassVar
 
-@dataclass
+import xml.etree.ElementTree as ET
+
+from xml.etree.ElementTree import ElementTree, Element
+
+Element_t = TypeVar( "Element" )
+
+
 class StrategyFilters():
     """
         Option strategy filter values
     """
 
     #short descpription for each stored filter parameter
-    shortDesc: Dict[ str, str ] =
-    {
+    shortDesc: ClassVar[ Dict[ str, str ] ] = {
         "pctUnderPxRange" : "Limit scan under Px (%)",
         "numMonthlyExpiries" : "No. mothly expiries",
         "maxLoss" : "Max loss",
@@ -43,7 +49,7 @@ class StrategyFilters():
 
     # storing tool tips on parameter entries
 
-    toolTips : Dict[ str, str ] = {
+    toolTips : ClassVar[ Dict[ str, str ] ] = {
         "pctUnderPxRange" : "scan strikes under this % below market price for \
                             underlying",
         "numMonthlyExpiries" : "number of monthly expires forward to scan",
@@ -56,7 +62,7 @@ class StrategyFilters():
                         numMonthlyExpiries : int = 3,
                         maxLoss : float = 2000,
                         minProfit : float = 200 ):
-    """
+        """
         parameters:
 
         pctUnderPxRange:  scan strikes under this % below market price for underlying
@@ -73,20 +79,20 @@ class StrategyFilters():
 
         minProfit : Minimum Profit of the strategy, case of credit spread
                      this would be the minimum premium value
-    """
+        """
         self.pctUnderPxRange = pctUnderPxRange,
         self.numMonthlyExpiries = numMonthlyExpiries,
         self.maxLoss = maxLoss,
         self.minProfit = minProfit
 
 
-    def loadFromXml( self, elementSubTree : TypeVar[Element]  ):
+    def loadFromXml( self, elementSubTree : Element_t  ):
         """
-            Initialize using xml subtree of 'underlyings' tag
+        Initialize using xml subtree of 'underlyings' tag
 
-            arguments
-                elementSubTree: xml 'element' including the 'strategy'
-                                tag and its sub-tree
+        arguments
+            elementSubTree: xml 'element' including the 'strategy'
+                            tag and its sub-tree
         """
 
         strategyEl = elementSubTree.find( 'strategy' )
@@ -102,25 +108,25 @@ class StrategyFilters():
                 except:
                     logging.error( 'Unable to set {} parameter value'.format( xmlTagName ) )
 
-    def saveToXml( self, elementSubTree : TypeVar[ElementTree] ):
-    """
-        Save to xml tree Element
-            arguments
-                elementTree: mpty element sub-tree at which to save parameters.
-                         'strategy' and sub-tree will be created
-    """
+    def saveToXml( self, elementSubTree : Element_t ):
+        """
+            Save to xml tree Element
+                arguments
+                    elementTree: mpty element sub-tree at which to save parameters.
+                             'strategy' and sub-tree will be created
+        """
         strategyEl = elementSubTree.Element( 'strategy' )
 
         for attribute in dir(self):
 
-            value = getattribute( self,  parameter )
+            value = getattribute( self,  attribute )
             #create new parameter
             parElement = elementSubTree.Element( 'parameter' )
 
             #name element
-            parElement.Element( 'name' )
+            parElement = parElement.Element( 'name' )
             parElement.text = attribute
 
             #assign value
-            valueEl = elementTree.subElement( 'value' )
-            valueEl.text = getattribute( self, attribute )
+            valueEl = parElement.subElement( 'value' )
+            valueEl.text = value

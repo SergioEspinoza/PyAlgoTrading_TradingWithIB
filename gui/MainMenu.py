@@ -30,13 +30,8 @@ import logging
 
 import xml.etree.ElementTree as ET
 
-from BullPutScreenerApp import MainWindow
-
 
 class MainMenu( tk.Menu ):
-
-    screenerApp : MainWindow
-
 
     def __init__( self, container, **kwargs ):
         super().__init__( container, tearoff= 0, **kwargs )

@@ -74,7 +74,7 @@ class MainWindow( tk.Tk ):
 
         #TODO: Initialize via defaultParameters.xml or something similar
         #load defaults for now
-        self.securitiesEntryFrame = SecurityFiltersEntryFrame( self,  )
+        self.securitiesEntryFrame = SecurityFiltersEntryFrame( self )
         self.securitiesEntryFrame.pack( side = 'top' )
 
         #separator
@@ -84,6 +84,11 @@ class MainWindow( tk.Tk ):
         #laod defaults for now
         self.strategiesEntryFrame = StrategyFiltersEntryFrame( self )
         self.strategiesEntryFrame.pack( side = 'top' )
+
+        #TODO: add
+        #           *Connect Button
+        #           *Run Button
+        #           *Status label (Connected / Disconnected / Error etc)
 
         self.config( menu = MainMenu( self ) )
 
