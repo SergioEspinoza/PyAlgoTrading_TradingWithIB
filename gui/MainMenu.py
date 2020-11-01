@@ -26,9 +26,13 @@
 
 import tkinter as tk
 from tkinter import filedialog
-import logging
+from logging import Logger
 
 import xml.etree.ElementTree as ET
+
+from SecurityFilters import SecurityFilters
+from StrategyFilters import StrategyFilters
+from XmlFileOps import ParameterXMLParser
 
 
 class MainMenu( tk.Menu ):
@@ -37,6 +41,7 @@ class MainMenu( tk.Menu ):
         super().__init__( container, tearoff= 0, **kwargs )
 
         self.screenerApp = container
+        self.xmlFileOps = ParameterXMLParser()
 
         fileMenu = tk.Menu( self, tearoff = 0 )
 
@@ -49,43 +54,21 @@ class MainMenu( tk.Menu ):
 
         super().add_cascade( menu=fileMenu, label="File" )
 
+
+
     def showSaveScreenerDialog( self ):
         filedialog.asksaveasfilename( filetypes=[( "XML", "*.xml" )] )
 
 
     def showLoadScreenerDialog( self ):
         filename = filedialog.askopenfilename( filetypes=[( "XML", "*.xml" )] )
-        print( "load xml file {}".format( filename ) )
+        print( "loading xml file {}".format( filename ) )
 
-        loadScreener( filename )
+        try:
+            self.xmlFileOps.loadFromXmlFile( fileneme )
+        except:
+            logger.error( 'xml parse error' )
 
-
-    def loadScreenerFile( self, filename ):
-        """
-            load screener parameters from xml file
-        """
-        pass
-
-    def saveScreenerFile( self, filename ):
-        """
-            arguments:
-                filename: xml file output name
-            Save current bull put screener settings into xml format
-            file format:
-            <?xml version="1.0" encoding="UTF-8"?>
-                < screener >
-
-                    < parameter >
-                        <name>"parameter1Name"</name>
-                        <value>float</value>
-                    < /parameter >
-
-                    < parameter >
-                        < name>
-                    < /parameter >
-                < /screener >
-                    ...
-            </xml>
-        """
-        #TODO
-        pass
+        #set new filter values
+        self.screenerApp.strategyFilters = self.xmlFileOps.strategyFilters
+        self.screenerApp.securityFilters = self.xmlFileOps.securityFilters

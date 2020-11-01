@@ -43,14 +43,20 @@ class ParameterTextEntry( ttk.Frame ):
         """
         super().__init__( container, **kwargs )
 
-        self.stringEntryVar = tk.StringVar()
+        self._stringEntryVar = tk.StringVar()
 
         label = ttk.Label( self, text=label )
         label.pack( side = 'left', padx = ( 0, 5) )
-        entry = ttk.Entry( self, textvariable = self.stringEntryVar )
+        self.m_label = label;
+
+        entry = ttk.Entry( self, textvariable = self._stringEntryVar )
         entry.pack( side = 'left', padx = ( 5, 0), fill='x', expand=True )
+        self.m_entry = entry
 
         self.m_paramName = name
 
     def getParameterStringVar( self ) -> tk.StringVar:
-        return self.stringEntryVar
+        return self._stringEntryVar
+
+    def setParameterTexEntry( self, value : str ):
+        self._stringEntryVar.set( value )

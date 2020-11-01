@@ -71,17 +71,28 @@ class SecurityFiltersEntryFrame( ttk.Frame ):
             parameterEntry.pack( fill='x', expand=True )
             self.m_parameterEntryList.append( parameterEntry )
 
-    def _updateSecurityFiltersObject( self ):
+        self._updateEntriesFromFilterValues( )
+
+    def _updateFilterValuesFromEntries( self ):
         """
             Update m_securityFilter member with parameter entry values
         """
         for entry in self.m_parameterEntryList:
             value = entry.getParameterStringVar().get()
             name = entry.m_paramName
-            setattribute( self.m_securityFilters, name, value )
+            setattr( self.m_securityFilters, name, value )
 
+    def _updateEntriesFromFilterValues( self ):
+        for entry in self.m_parameterEntryList:
+            for ( name, desc ) in self.m_securityFilters.shortDesc.items():
+                if name == entry.m_paramName:
+                    filterValue = getattr( self.m_securityFilters, name )
+                    entry.setParameterTexEntry( filterValue )
 
-
-    def getSecurityFiltersObject( self ) -> SecurityFilters_t:
-        self._updateSecurityFiltersObject()
+    def getSecurityFilters( self ) -> SecurityFilters_t:
+        self._updateFilterValuesFromEntries()
         return self.m_securityFilters
+
+    def setSecurityFilters( self, filters: SecurityFilters_t ):
+        self.m_securityFilters = filters
+        self._updateEntriesFromFilterValues()

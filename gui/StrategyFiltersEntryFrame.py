@@ -62,18 +62,30 @@ class StrategyFiltersEntryFrame( tk.Frame ):
             parameterEntry.pack( fill='x', expand=True )
             self.m_parameterEntryList.append( parameterEntry )
 
+        self._updateEntriesFromFilterValues( )
 
-    def _updateStrategyFiltersObject( self ):
+
+
+    def _updateFilterValuesFromEntries( self ):
         """
             Update m_securityFilter member with parameter entry values
         """
         for entry in self.m_parameterEntryList:
             value = entry.getParameterStringVar().get()
             name = entry.m_paramName
-            setattribute( self.m_strategyFilters, name, value )
+            setattr( self.m_strategyFilters, name, value )
 
+    def _updateEntriesFromFilterValues( self ):
+        for entry in self.m_parameterEntryList:
+            for ( name, desc ) in self.m_strategyFilters.shortDesc.items():
+                if name == entry.m_paramName:
+                    filterValue = getattr( self.m_strategyFilters, name )
+                    entry.setParameterTexEntry( filterValue )
 
-
-    def getSecurityFiltersObject( self ) -> StrategyFilters_t:
-        self._updateStrategyFiltersObject()
+    def getStrategyFilters( self ) -> StrategyFilters_t:
+        self._updateFilterValuesFromEntries()
         return self.m_strategyFilters
+
+    def setStrategyFilters( self, filters: StrategyFilters_t ):
+        self.m_strategyFilters = filters
+        self._updateEntriesFromFilterValues()

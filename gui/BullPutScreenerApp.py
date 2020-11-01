@@ -53,6 +53,16 @@ from StrategyFiltersEntryFrame import StrategyFiltersEntryFrame
 
 from MainMenu import MainMenu
 
+from XmlFileOps import ParameterXMLParser
+
+from typing import TypeVar
+
+import logging
+
+SecurityFilters = TypeVar( 'SecurityFilters' )
+StrategyFilters = TypeVar( 'StrategyFilters' )
+
+
 class MainWindow( tk.Tk ):
 
     def __init__( self, *args, **kargs ):
@@ -72,17 +82,25 @@ class MainWindow( tk.Tk ):
             * 'Status Label' ( Connected / Disconnected )
         """
 
-        #TODO: Initialize via defaultParameters.xml or something similar
-        #load defaults for now
-        self.securitiesEntryFrame = SecurityFiltersEntryFrame( self )
+        parameterParser = ParameterXMLParser()
+        #initial parameters from local file
+        parameterParser.loadFromXmlFile( './default.xml' )
+
+
+        self.securityFilters = parameterParser.securityFilters
+        self.securitiesEntryFrame = SecurityFiltersEntryFrame( self,
+                                    parameterParser.securityFilters )
+
         self.securitiesEntryFrame.pack( side = 'top' )
 
         #separator
         ttk.Separator( self, orient='horizontal' ).pack( fill='x',  pady = (10,10) )
 
-        #TODO: Initialize via defaultParameters.xml or something similar
-        #laod defaults for now
-        self.strategiesEntryFrame = StrategyFiltersEntryFrame( self )
+
+        self.strategyFilters = parameterParser.strategyFilters
+        self.strategiesEntryFrame = StrategyFiltersEntryFrame( self,
+                                    parameterParser.strategyFilters  )
+
         self.strategiesEntryFrame.pack( side = 'top' )
 
         #TODO: add
@@ -91,6 +109,18 @@ class MainWindow( tk.Tk ):
         #           *Status label (Connected / Disconnected / Error etc)
 
         self.config( menu = MainMenu( self ) )
+
+        logging.basicConfig(level=logging.INFO)
+
+def setFilterValues( securityFilters : SecurityFilters ,
+                    strategyFilters : StrategyFilters ):
+    """
+    update entry fields with new filter values
+    """
+    self.securityFilters = securityFilters
+    self.securityFilters = securityFilters
+
+    self.setSecurityFilters
 
 
 if __name__ == "__main__":

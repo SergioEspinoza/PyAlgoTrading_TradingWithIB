@@ -38,7 +38,7 @@ class ParameterXMLParser():
         self.strategyFilters = None
 
 
-    def loadXmlFile( self, filename ) -> bool :
+    def loadFromXmlFile( self, filename ) -> bool :
         """
         Parse parameter values xml file and store result
         into instance variables 'securityFilters' and 'strategyFilters'
@@ -49,35 +49,74 @@ class ParameterXMLParser():
         tree = ET.parse( filename )
 
         root = tree.getroot()
-StrategyFilters
-        #get bull put screen parameters
-        for screener in root.findall( 'BullPutScreener' ):
 
-            underlyingFiltersElem = screener.find( 'underlyings' )
+        if( root is not None ):
 
-            if underlyingFiltersElem is not None:
-                SecurityFilters.loadFromXmlElem()
+            logging.info( "root element created" )
+
+            screener = root.find( 'BullPutScreener' )
+
+            if screener is not None:
+
+                securityFilters = SecurityFilters();
+                try:
+                    securityFilters.loadFromXmlElem( bullPutParams )
+                except:
+                    logging.error( "unable to load security filter params" )
+
+                self.securityFilters = securityFilters
+
+                strategyFilters = StrategyFilters()
+                try:
+                    strategyFilters.loadFromXmlElem( bullPutParams)
+                except:
+                    logging.error( "unable to load strategy filter params" )
+
+                self.strategyFilters = strategyFilters
+
+        else:
+            logging.error( 'unable to parse file' )
 
 
 
-                # self.minMarketCap = minMarketCap,
-                # self.constituentsSlice = constituentsSlice ,
-                # self.minOptionVolume = minOptionVolume,
-                # self.minIvRank = minIvRank,
-                # self.minDaysToEarnigns = minDaysToEarnigns
+    def saveToXmlFile( self, filename ):
+        """
+            arguments:
+                filename: xml file output name
+            Save current bull put screener settings into xml format
+            file format:
+            <?xml version="1.0" encoding="UTF-8"?>
+                < BullPutScreener >
+
+                    < parameter >
+                        <name>"parameter1Name"</name>
+                        <value>float</value>
+                    < /parameter >
+
+                    < parameter >
+                        < name>
+                    < /parameter >
+                < /BullPutScreener >
+                    ...
+        """
+        # self.minMarketCap = minMarketCap,
+        # self.constituentsSlice = constituentsSlice ,
+        # self.minOptionVolume = minOptionVolume,
+        # self.minIvRank = minIvRank,
+        # self.minDaysToEarnigns = minDaysToEarnigns
 
 
 
-            # self.pctUnderPxRange = pctUnderPxRange
-            # self.numMonthlyExpiries = numMonthlyExpiries
-            # self.maxLoss = maxLoss
-            # self.minProfit = minProfit
+        # self.pctUnderPxRange = pctUnderPxRange
+        # self.numMonthlyExpiries = numMonthlyExpiries
+        # self.maxLoss = maxLoss
+        # self.minProfit = minProfit
 
-            strategyFiltersElem = screener.find( 'strategy ')
-
-            if strategyFiltersElem is not None:
-
+        #TODO
+        pass
 
 
-if __name__ = '__main__':
+
+
+if __name__ == '__main__':
     print( 'Invoking unit test for ParameterXMLParser class' )

@@ -1,13 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?> 
+<?xml version="1.0" encoding="UTF-8"?>
+
 <!-- This is an example of a bull put screener parameters file
 Loading this file should have the effect of setting screener parameters
 to the values included in each of the "value" tags
 
 author: Sergio Espinoza
-sergio.espinoza.lopez@gmail.com
--->
- <!-- bul put screener parameter file -->
-  <BullPutScreener>
+sergio.espinoza.lopez@gmail.com -->
+
+
+<!-- bul put screener parameter file -->
+<BullPutScreener>
 
   <!-- underlying screening parameters -->
   <underlyings>
@@ -36,7 +38,7 @@ sergio.espinoza.lopez@gmail.com
       <!-- min 52 weeks Implied Volatility Rank (%)  -->
       <name>minIVRank</name>
       <value>30</value>
-    </parameter>MinProfit
+    </parameter>
 
     <parameter>
       <!-- Minimum days to nenxt earning release -->
@@ -44,11 +46,9 @@ sergio.espinoza.lopez@gmail.com
       <value>30</value>
     </parameter>
 
-
-
   </underlyings>
 
-<!-- Strategy screening paramters -->
+  <!-- Strategy screening paramters -->
   <strategy>
 
     <parameter>

@@ -63,7 +63,6 @@ dependencies:
   - ncurses=6.2=he6710b0_0
   - notebook=6.0.3=py36_0
   - numpy-base=1.18.1=py36hde5b4d6_1
-  - openssl=1.1.1=h7b6447c_0
   - pandas=1.0.3=py36h0573a6f_0
   - pandoc=2.2.3.2=0
   - pandocfilters=1.4.2=py36_1
