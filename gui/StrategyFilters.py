@@ -1,8 +1,8 @@
-"""
+'''
 Copyright 2020 Sergio Espinoza Lopez sergio.espinoza.lopez@gmail.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
+of this software and associated documentation files (the 'Software'), to deal
 in the Software without restriction, including without limitation the rights to
 use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 of the Software, and to permit persons to whom the Software is furnished to
@@ -11,7 +11,7 @@ do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
 THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -21,7 +21,7 @@ THE SOFTWARE.
 
   Convenience data class for holding several option strategy screening
   parameters
-"""
+'''
 
 from dataclasses import dataclass
 from typing import TypeVar, Dict, ClassVar
@@ -30,7 +30,9 @@ import xml.etree.ElementTree as ET
 
 from xml.etree.ElementTree import ElementTree, Element
 
-Element_t = TypeVar( "Element" )
+import logging
+
+Element_t = TypeVar( 'Element' )
 
 
 class StrategyFilters():
@@ -40,21 +42,21 @@ class StrategyFilters():
 
     #short descpription for each stored filter parameter
     shortDesc: ClassVar[ Dict[ str, str ] ] = {
-        "pctUnderPxRange" : "Limit scan under Px (%)",
-        "numMonthlyExpiries" : "No. mothly expiries",
-        "maxLoss" : "Max loss",
-        "minProfit" : "Min Profit"
+        'pctUnderPx' : 'Limit scan under Px (%)',
+        'numMonthlyExpiries' : 'No. mothly expiries',
+        'maxLoss' : 'Max loss',
+        'minProfit' : 'Min Profit'
     }
 
 
     # storing tool tips on parameter entries
 
     toolTips : ClassVar[ Dict[ str, str ] ] = {
-        "pctUnderPxRange" : "scan strikes under this % below market price for \
-                            underlying",
-        "numMonthlyExpiries" : "number of monthly expires forward to scan",
-        "maxLoss" : "Maximum loss allowed",
-        "minProfit" : "Minimum Profit of the strategy"
+        'pctUnderPx' : 'scan strikes under this % below market price for ' \
+                            'underlying',
+        'numMonthlyExpiries' : 'number of monthly expires forward to scan',
+        'maxLoss' : 'Maximum loss allowed',
+        'minProfit' : 'Minimum Profit of the strategy'
     }
 
 
@@ -65,7 +67,7 @@ class StrategyFilters():
         """
         parameters:
 
-        pctUnderPxRange:  scan strikes under this % below market price for underlying
+        pctUnderPx:  scan strikes under this % below market price for underlying
 
 
         numMonthlyExpiries : number of monthly expires forward to scan
@@ -80,13 +82,13 @@ class StrategyFilters():
         minProfit : Minimum Profit of the strategy, case of credit spread
                      this would be the minimum premium value
         """
-        self.pctUnderPxRange = pctUnderPxRange,
+        self.pctUnderPx = pctUnderPxRange,
         self.numMonthlyExpiries = numMonthlyExpiries,
         self.maxLoss = maxLoss,
         self.minProfit = minProfit
 
 
-    def loadFromXml( self, elementSubTree : Element_t  ):
+    def loadFromXmlElem( self, elementSubTree : Element_t  ):
         """
         Initialize using xml subtree of 'underlyings' tag
 
@@ -98,17 +100,26 @@ class StrategyFilters():
         strategyEl = elementSubTree.find( 'strategy' )
 
         if strategyEl is not None:
-            for parameter in strategyEl.findall ( 'parameter' ):
+
+            parameters = strategyEl.findall( 'parameter' )
+
+            logging.info( f'Parsing strategy group with {len(parameters)}' \
+            'parameters' )
+
+            for parameter in parameters:
                 nameEl = parameter.find( 'name' )
                 valueEl = parameter.find( 'value' )
                 try:
                     #set value
-                    setattribute( nameEl.text, valueEl.text )
+                    logging.info( f'setting {nameEl.text} to {valueEl.text}' )
+                    setattr( self, nameEl.text, valueEl.text )
 
-                except:
-                    logging.error( 'Unable to set {} parameter value'.format( xmlTagName ) )
+                except Exception as e:
+                    logging.error( f'{e}' )
+        else:
+            logging.error( 'Unable to find strategy tag! ' )
 
-    def saveToXml( self, elementSubTree : Element_t ):
+    def saveToXmlElem( self, elementSubTree : Element_t ):
         """
             Save to xml tree Element
                 arguments

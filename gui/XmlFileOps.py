@@ -46,6 +46,8 @@ class ParameterXMLParser():
         return: True if parser success
         """
 
+        logging.info( f'parsing {filename} file' )
+
         tree = ET.parse( filename )
 
         root = tree.getroot()
@@ -54,28 +56,31 @@ class ParameterXMLParser():
 
             logging.info( "root element created" )
 
-            screener = root.find( 'BullPutScreener' )
+            if root.tag == 'BullPutScreener':
 
-            if screener is not None:
+                logging.info( 'Loading Bull Put Screener parameters...' )
 
                 securityFilters = SecurityFilters();
                 try:
-                    securityFilters.loadFromXmlElem( bullPutParams )
-                except:
-                    logging.error( "unable to load security filter params" )
+                    securityFilters.loadFromXmlElem( root )
+                except Exception as e:
+                    logging.error( f"{e}" )
 
                 self.securityFilters = securityFilters
 
                 strategyFilters = StrategyFilters()
                 try:
-                    strategyFilters.loadFromXmlElem( bullPutParams)
-                except:
-                    logging.error( "unable to load strategy filter params" )
+                    strategyFilters.loadFromXmlElem( root )
+                except Exception as e:
+                    logging.error( f"{e}" )
 
                 self.strategyFilters = strategyFilters
 
+            else:
+                logging.info( 'Cannot find BullPutScreener tag!' )
+
         else:
-            logging.error( 'unable to parse file' )
+            logging.error( f'unable to parse {filename} file' )
 
 
 

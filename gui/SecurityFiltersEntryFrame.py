@@ -38,7 +38,7 @@ SecurityFilters_t = TypeVar( "SecurityFilters" )
 
 class SecurityFiltersEntryFrame( ttk.Frame ):
     """
-    'Screner parameter section with screener parameter entries:
+    Screner parameter section with screener parameter entries:
             * min_market_cap: minimum market capital in USD Millions Dollars
             * constituents_slice: After minimum markgetParameterStringVaret cap
                 ordering / filtering scan up to to this number of securities

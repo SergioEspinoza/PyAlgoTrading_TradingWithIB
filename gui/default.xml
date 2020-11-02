@@ -16,7 +16,7 @@ sergio.espinoza.lopez@gmail.com -->
     <parameter>
       <!-- minimum market capital in USDM -->
       <name>minMarketCap</name>
-      <value>5.95</value>
+      <value>1000</value>
     </parameter>
 
     <parameter>
@@ -24,14 +24,13 @@ sergio.espinoza.lopez@gmail.com -->
         further scanning, after ordering by market Cap,
          if = 0 then ignore  -->
       <name>constituentsSlice</name>
-      <value>0</value>
+      <value>10</value>
     </parameter>
 
     <parameter>
-      <!-- Minimmum average daily option volume
-            multiples of 1k  -->
+      <!-- Minimmum average daily option volume -->
       <name>minOptionVolume</name>
-      <value>10</value>
+      <value>5000</value>
     </parameter>
 
     <parameter>
@@ -43,7 +42,7 @@ sergio.espinoza.lopez@gmail.com -->
     <parameter>
       <!-- Minimum days to nenxt earning release -->
       <name>minDaysToEarnings</name>
-      <value>30</value>
+      <value>45</value>
     </parameter>
 
   </underlyings>
@@ -55,25 +54,25 @@ sergio.espinoza.lopez@gmail.com -->
       <!-- scan strikes under this % below
                    market price for underlying -->
       <name>pctUnderPx</name>
-      <value>15</value>
+      <value>30</value>
     </parameter>
 
     <parameter>
       <!-- Number of monthly expiries to scan -->
       <name>numMonthlyExpiries</name>
-      <value>0</value>
+      <value>3</value>
     </parameter>
 
     <parameter>
       <!-- Maximum Loss  -->
       <name>maxLoss</name>
-      <value>0</value>
+      <value>2000</value>
     </parameter>
 
     <parameter>
       <!-- Minimum Strategy profit -->
       <name>minProfit</name>
-      <value>0</value>
+      <value>200</value>
     </parameter>
 
   </strategy>

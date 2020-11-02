@@ -110,7 +110,7 @@ class MainWindow( tk.Tk ):
 
         self.config( menu = MainMenu( self ) )
 
-        logging.basicConfig(level=logging.INFO)
+
 
 def setFilterValues( securityFilters : SecurityFilters ,
                     strategyFilters : StrategyFilters ):
@@ -127,6 +127,7 @@ if __name__ == "__main__":
     """
     Test main window creation
     """
+    logging.basicConfig(level=logging.INFO)
 
     window = MainWindow()
 
