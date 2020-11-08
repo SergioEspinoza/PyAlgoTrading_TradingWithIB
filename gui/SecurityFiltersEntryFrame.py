@@ -53,8 +53,7 @@ class SecurityFiltersEntryFrame( ttk.Frame ):
         super().__init__( container, **kargs )
 
 
-        ttk.Label( self, text='Underlying filters' ).pack( fill='x', pady= ( 10, 10 ) )
-
+        ttk.Label( self, text='Underlying filters', font=("Times", 10, "bold") ).pack( fill='x', pady= ( 10, 10 ) )
 
         if securityFilters is None:
             #give it default values

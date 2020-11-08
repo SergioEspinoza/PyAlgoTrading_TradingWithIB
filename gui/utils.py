@@ -33,6 +33,8 @@ from ib_insync import *
 from datetime import date
 import asyncio
 
+import logging
+
 @dataclass
 class Utils( ):
 
@@ -42,31 +44,45 @@ class Utils( ):
     port = 7497
 
 
-    def __init__( self, asyncioloop = None,  client: int = 1, msgBoxParent = None,   ):
-
+    def __init__( self, asyncioloop = None,  client: int = 1, rootApp = None   ):
+        """
+            Args:
+                asyncioloop : asyncio event loop to be used for  asynchronous
+                              ib_insync calls. 'asyncio.get_event_loop()' gives
+                              current loop'. asyncio must support mutiple nested
+                              event loops (need ib_insync.util.patchAsyncio() )
+                client: IB gateway client number. Round integer. Neded by TWS API to
+                        identify request coming from same endpoint.
+                rootApp: root application window instance. Additional dialogs will
+                         be built upon it
+        """
         self.Ib = None
         self.clientId = client
         self.connected = False
-        self.msgBoxParent = msgBoxParent
+        self.rootApp = rootApp
         self.loop = asyncioloop
 
+        rootApp.protocol( 'WM_DELETE_WINDOW', self._onDeleteWindow )
 
-    def onDisconnected( self ):
+
+
+    def _onDisconnected( self ):
+        logging.info( 'TWS connection timeout!' )
         self.connected = False
 
-        if self.msgBoxParent != None:
+        if self.rootApp != None:
             messagebox.showinfo( title = "Connection Timeout",
                                  message = "Client Disconnected!",
-                                 parent = self.msgBoxParent )
+                                 parent = self.rootApp )
 
-    def onConnected( self ):
+    def _onConnected( self ):
         self.connected = True
         self.progressDialog.destroy()
 
-        if self.msgBoxParent != None:
+        if self.rootApp != None:
             messagebox.showinfo( title = "Connected!!",
                                  message = f"Connected w/ client ID !!",
-                                 parent=self.msgBoxParent )
+                                 parent=self.rootApp )
 
     def TwsConnect( self, readOnly: bool = False ) -> bool:
         """
@@ -75,80 +91,88 @@ class Utils( ):
 
             Args:
 
-            readOnly: Accces read only mode
-            msgBoxParent: Root frame for dialog box notification
+                readOnly: Accces read only mode
+                rootApp: Root frame for dialog box notification
 
             Return:
                 True if connection success
         """
 
         if  self.Ib == None:
+            logging.info( 'Creating IB object' )
             self.Ib = IB()
-            self.Ib.disconnectedEvent += self.onDisconnected
-            self.Ib.connectedEvent += self.onConnected
+            self.Ib.disconnectedEvent += self._onDisconnected
+            self.Ib.connectedEvent += self._onConnected
 
 
         if self.Ib.isConnected() == False:
 
-            self.progressDialog = tk.Toplevel( self.msgBoxParent )
+            self.progressDialog = tk.Toplevel( self.rootApp )
             progress = ttk.Progressbar( self.progressDialog, mode='indeterminate' )
             progress.place( x=30, y=60, width=200 )
+            progress.pack()
             progress.start()
 
-            self.Ib.connect( self.host,
-                             self.port,
-                             self.clientId,
-                             timeout = self.timeout,
-                             readonly = readOnly )
+            try:
 
-        elif msgBoxParent != None :
-            messagebox.showinfo( "Already connected", parent=msgBoxParent )
+                util.run( self.Ib.connectAsync( self.host,
+                                 self.port,
+                                 self.clientId,
+                                 timeout = self.timeout,
+                                 readonly = True ) )
+            except TimeoutError:
+                self._onDisconnected()
+
+            except ConnectionRefusedError:
+                self._onDisconnected()
 
 
+        elif rootApp != None:
+            messagebox.showinfo( "Already connected", parent=rootApp )
 
-    def _onTimeout( self ):
+    def _onGuiUpdateTimeout( self ):
         """
         For testing purposes, update GUI
         """
-        self.root.update()
-        self.loop.call_later( .03, _onTimeout, *[root, loop] )
+        self.rootApp.update()
+        self.loop.call_later( .03, self._onGuiUpdateTimeout )
 
     def _onDeleteWindow( self ):
         """
         Disconnect, stop / close loop
         """
-        self.Ib.disconnnect()
+        self.Ib.disconnect()
         self.loop.stop()
+
+    def run_forever( self ):
+        self._onGuiUpdateTimeout()
+        self.loop.run_forever()
+
+
 
 if __name__ == "__main__":
 
     """
     Some Unit Testing
     """
-    def main():
-        root = tk.Tk()
 
-        root.geometry( "300x200" )
-
-        loop = asyncio.get_event_loop()
-
-        if loop.is_running():
-             print('loop already running')
-
-        root.protocol('WM_DELETE_WINDOW', _onDeleteWindow )
-
-        args = [root, loop]
-        loop.call_later( 0.03, _onTimeout, *[root, loop] )
-
-        utils = Utils( msgBoxParent=root, client = 5, asyncioloop = loop )
-
-        try:
-            utils.TwsConnect( )
-        except:
-            print( 'Exception catched' )
-
-        loop.run_forever()
+    logging.basicConfig(level=logging.INFO)
 
     util.patchAsyncio()
 
-    main()
+    #Build test application window
+    root = tk.Tk()
+    root.geometry( "300x200" )
+
+    utils = Utils( rootApp=root, client = 5, asyncioloop = asyncio.get_event_loop() )
+
+
+    label = ttk.Label( root, text="TWS Connection test", font = ( "Helvetica", 15, "bold" ) )
+    button = ttk.Button( root, text = 'Connecto to IB', command = utils.TwsConnect )
+
+    label.pack()
+    button.pack()
+
+    #loop = asyncio.get_event_loop()
+
+    utils.run_forever()

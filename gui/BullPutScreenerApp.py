@@ -57,6 +57,8 @@ from XmlFileOps import ParameterXMLParser
 
 from typing import TypeVar
 
+from ParameterTextEntry import ParameterTextEntry
+
 import logging
 
 SecurityFilters = TypeVar( 'SecurityFilters' )
@@ -103,12 +105,41 @@ class MainWindow( tk.Tk ):
 
         self.strategiesEntryFrame.pack( side = 'top' )
 
-        #TODO: add
-        #           *Connect Button
-        #           *Run Button
-        #           *Status label (Connected / Disconnected / Error etc)
+        ttk.Separator( self, orient='horizontal' ).pack( fill='x',  pady = (10,10) )
+
+        parameterEntry = ParameterTextEntry( self, 'Workers', 'Workers' )
+        parameterEntry.pack( side='top' )
+
+        ttk.Separator( self, orient='horizontal' ).pack( fill='x',  pady = (10,10) )
+
+        connectButton = ttk.Button( self, text = 'Connect to TWS', command = self.connectButtonCallback )
+        connectButton.pack( side = 'top' )
+
+        ttk.Separator( self, orient='horizontal' ).pack( fill='x',  pady = (10,10) )
+
+        runButton = ttk.Button( self, text = 'Run Underlying Scanner',
+                                command = self.runButtonCallback,
+                                state = tk.DISABLED )
+        runButton.pack( side = 'top' )
+
+        ttk.Separator( self, orient='horizontal' ).pack( fill='x',  pady = (10,10) )
+
+        runButton = ttk.Button( self,
+                                text = 'Run Strategy Scanner',
+                                command = self.runButtonCallback,
+                                state = tk.DISABLED )
+
+        runButton.pack( side = 'top' )
+
+        #TODO: add Status Label (Connected / Disconnected / Error etc)
 
         self.config( menu = MainMenu( self ) )
+
+    def runButtonCallback( self ):
+        logging.info( 'Run Button clicked' )
+
+    def connectButtonCallback( self ):
+        logging.info( 'Connect Button clicked' )
 
 
 
@@ -134,6 +165,6 @@ if __name__ == "__main__":
     #resize implementation pending
     window.resizable( False, False )
 
-    window.geometry( '400x300' )
+    window.geometry( '400x500' )
 
     window.mainloop()

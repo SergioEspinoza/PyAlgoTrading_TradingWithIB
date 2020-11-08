@@ -47,7 +47,7 @@ class StrategyFiltersEntryFrame( tk.Frame ):
          """
         super().__init__( container, **kwargs )
 
-        ttk.Label( self, text='Option Strategy filters' ).pack( fill='x', pady= ( 10, 10 ) )
+        ttk.Label( self, text='Option Strategy filters', font=("Times", 10, "bold") ).pack( fill='x', pady= ( 10, 10 ) )
 
         if strategyFilters is None:
             #set default values

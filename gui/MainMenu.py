@@ -26,7 +26,7 @@
 
 import tkinter as tk
 from tkinter import filedialog
-from logging import Logger
+import logging
 
 import xml.etree.ElementTree as ET
 
@@ -65,9 +65,9 @@ class MainMenu( tk.Menu ):
         print( "loading xml file {}".format( filename ) )
 
         try:
-            self.xmlFileOps.loadFromXmlFile( fileneme )
-        except:
-            logger.error( 'xml parse error' )
+            self.xmlFileOps.loadFromXmlFile( filename )
+        except Exception as e:
+            logging.error( f'{e}' )
 
         #set new filter values
         self.screenerApp.strategyFilters = self.xmlFileOps.strategyFilters
