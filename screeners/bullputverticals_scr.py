@@ -1,4 +1,8 @@
 """
+
+
+
+
 Bull put vertical screening through Interactive Brokers using ib_insync
 
 Asumes csv file with sp500 constituents tickers and Market Capital
@@ -59,7 +63,7 @@ class BullPutScreener( ):
         """
         self.screenerParams = dict
 
-    def setScreener
+    def setScreenerParameters():
 
     def loadConstituents():
         """
