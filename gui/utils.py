@@ -141,7 +141,9 @@ class Utils( ):
         """
         Disconnect, stop / close loop
         """
-        self.Ib.disconnect()
+        if self.Ib is not None:
+            self.Ib.disconnect()
+
         self.loop.stop()
 
     def run_forever( self ):
