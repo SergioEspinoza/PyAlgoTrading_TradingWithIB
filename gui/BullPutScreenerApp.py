@@ -47,22 +47,16 @@ import tkinter as tk
 
 from tkinter import ttk
 
-from SecurityFiltersEntryFrame import SecurityFiltersEntryFrame
-
-from StrategyFiltersEntryFrame import StrategyFiltersEntryFrame
-
 from MainMenu import MainMenu
 
 from XmlFileOps import ParameterXMLParser
-
-from typing import TypeVar
-
-from ParameterTextEntry import ParameterTextEntry
-
 import logging
 
-SecurityFilters = TypeVar( 'SecurityFilters' )
-StrategyFilters = TypeVar( 'StrategyFilters' )
+from ParameterTextEntry import ParameterTextEntry
+from SecurityFilters import SecurityFilters
+from StrategyFilters import StrategyFilters
+from SecurityFiltersEntryFrame import SecurityFiltersEntryFrame
+from StrategyFiltersEntryFrame import StrategyFiltersEntryFrame
 
 
 class MainWindow( tk.Tk ):

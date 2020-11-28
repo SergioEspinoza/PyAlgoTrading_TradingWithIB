@@ -34,8 +34,6 @@ from ParameterTextEntry import ParameterTextEntry
 
 from typing import TypeVar
 
-SecurityFilters_t = TypeVar( "SecurityFilters" )
-
 class SecurityFiltersEntryFrame( ttk.Frame ):
     """
     Screner parameter section with screener parameter entries:
@@ -48,7 +46,7 @@ class SecurityFiltersEntryFrame( ttk.Frame ):
     """
 
     def __init__( self, container,
-                securityFilters : SecurityFilters_t  = None, **kargs ):
+                securityFilters : SecurityFilters  = None, **kargs ):
 
         super().__init__( container, **kargs )
 
@@ -88,10 +86,10 @@ class SecurityFiltersEntryFrame( ttk.Frame ):
                     filterValue = getattr( self.m_securityFilters, name )
                     entry.setParameterTexEntry( filterValue )
 
-    def getSecurityFilters( self ) -> SecurityFilters_t:
+    def getSecurityFilters( self ) -> SecurityFilters:
         self._updateFilterValuesFromEntries()
         return self.m_securityFilters
 
-    def setSecurityFilters( self, filters: SecurityFilters_t ):
+    def setSecurityFilters( self, filters: SecurityFilters ):
         self.m_securityFilters = filters
         self._updateEntriesFromFilterValues()

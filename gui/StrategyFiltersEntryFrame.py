@@ -28,16 +28,10 @@ from tkinter import ttk
 from ParameterTextEntry import ParameterTextEntry
 from StrategyFilters import StrategyFilters
 
-from typing import TypeVar
-
-
-StrategyFilters_t = TypeVar("StrategyFilters")
-
-
 class StrategyFiltersEntryFrame( tk.Frame ):
 
     def __init__( self, container,
-                strategyFilters : StrategyFilters_t = None, **kwargs):
+                strategyFilters : StrategyFilters = None, **kwargs):
         """
         Option strategy filters:
              * pct_under_px_range: .20  scan strikes under this % below market price for underlying
@@ -82,10 +76,10 @@ class StrategyFiltersEntryFrame( tk.Frame ):
                     filterValue = getattr( self.m_strategyFilters, name )
                     entry.setParameterTexEntry( filterValue )
 
-    def getStrategyFilters( self ) -> StrategyFilters_t:
+    def getStrategyFilters( self ) -> StrategyFilters:
         self._updateFilterValuesFromEntries()
         return self.m_strategyFilters
 
-    def setStrategyFilters( self, filters: StrategyFilters_t ):
+    def setStrategyFilters( self, filters: StrategyFilters ):
         self.m_strategyFilters = filters
         self._updateEntriesFromFilterValues()

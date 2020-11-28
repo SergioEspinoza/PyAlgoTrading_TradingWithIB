@@ -32,8 +32,6 @@ from xml.etree.ElementTree import ElementTree, Element
 
 import logging
 
-Element_t = TypeVar( 'Element' )
-
 
 class StrategyFilters():
     """
@@ -88,7 +86,7 @@ class StrategyFilters():
         self.minProfit = minProfit
 
 
-    def loadFromXmlElem( self, elementSubTree : Element_t  ):
+    def loadFromXmlElem( self, elementSubTree : Element  ):
         """
         Initialize using xml subtree of 'underlyings' tag
 
@@ -119,7 +117,7 @@ class StrategyFilters():
         else:
             logging.error( 'Unable to find strategy tag! ' )
 
-    def saveToXmlElem( self, elementSubTree : Element_t ):
+    def saveToXmlElem( self, elementSubTree : Element ):
         """
             Save to xml tree Element
                 arguments
