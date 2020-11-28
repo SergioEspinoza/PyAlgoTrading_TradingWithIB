@@ -34,8 +34,6 @@ from xml.etree.ElementTree import ElementTree, Element
 
 import logging
 
-Element_t = TypeVar( 'Element')
-
 class SecurityFilters:
 
     #short descpriptions for each filter parameter
@@ -97,7 +95,7 @@ class SecurityFilters:
 
 
 
-    def loadFromXmlElem( self, elementSubTree : Element_t  ):
+    def loadFromXmlElem( self, elementSubTree : Element  ):
         """
             Initialize using xml subtree (Element) of 'underlyings' tag
 
@@ -129,7 +127,7 @@ class SecurityFilters:
         else:
             logging.error( 'Unable to find underlyings tag! ' )
 
-    def saveToXmlElem( self, elementSubTree : Element_t ):
+    def saveToXmlElem( self, elementSubTree : Element ):
         """
         Save to xml tree Element
             arguments

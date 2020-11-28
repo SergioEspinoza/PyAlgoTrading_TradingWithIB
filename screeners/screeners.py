@@ -26,7 +26,8 @@ from .bullputverticals_scr import BullPutScreener
 from typing import Dict
 
 
-__all__ += BullPutScreener
+__all__ += [ 'Screeners', 
+             'BullPutScreener' ]
 # add more here
 
 class Screeners():

@@ -32,8 +32,6 @@ from SecurityFilters import SecurityFilters
 from StrategyFilters import StrategyFilters
 from ParameterTextEntry import ParameterTextEntry
 
-from typing import TypeVar
-
 class SecurityFiltersEntryFrame( ttk.Frame ):
     """
     Screner parameter section with screener parameter entries:

@@ -31,7 +31,7 @@ from ib_insync import *
 import logging
 
 
-#__all__ += Utils
+__all__ += 'Utils'
 
 class Utils():
     def __init__(self):
@@ -73,7 +73,6 @@ class Utils():
       """
       logging.info( 'Utils.twsConnect() method has been invoked' )
 
-      
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
