@@ -31,15 +31,19 @@ from ib_insync import *
 import logging
 
 
-__all__ += 'Utils'
+__all__ = 'Utils'
 
 class Utils():
     def __init__(self):
         pass
 
+    _IB : IB
+
     @classmethod
     def getSp500Constituents( cls, filename ):
         """
+        get S&P500 constituents via datahub.io Package
+            args: filename
 
         """
         package = Package('https://datahub.io/core/s-and-p-500-companies-financials/datapackage.json')
@@ -74,18 +78,21 @@ class Utils():
       logging.info( 'Utils.twsConnect() method has been invoked' )
 
 
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 
+    #for more unit tests look into test_screeners.py module in 'test' direcotry
+
     print('**** Utils class unit test ****')
 
-    # print( 'getSp500Constituents' )
-    #
-    # myinput = input( 'input filename ---> ' )
-    #
-    # print( 'Processing...' )
-    #
-    # Utils.getSp500Constituents( myinput )
+    print( 'getSp500Constituents' )
+
+    myinput = input( 'input filename ---> ' )
+
+    print( 'Processing...' )
+
+    Utils.getSp500Constituents( myinput )
 
     print( 'test twsConnect method')
 

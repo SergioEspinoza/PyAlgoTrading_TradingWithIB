@@ -3,6 +3,7 @@
 if [ -z $PYTHONPATH ]; then
   echo "PYTHONPATH empty"
   export PYTHONPATH="$(pwd)/.."
+  echo "new PYTHONPATH: $PYTHONPATH"
 elif [[ ":$PYTHONPATH:" != *":$(pwd):"* ]]; then
   echo "PYTHONPATH not empty"
   export PYTHONPATH="$PYTHONPATH:$(pwd)/.."

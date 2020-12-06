@@ -41,54 +41,45 @@ import logging
 
 
 class BullPutScreener( ):
-    def __init__( self, ib: Type[IB],
-                  loop: Type[asyncio.loop],
-                  underlyingsUniverse: list[int] ):
+    def __init__( self, ib: IB = None,
+                  constituents: List[ str ] = None,
+                  filterParams : Dict[ str, float ] = None,
+                   loop = None ):
         """ 
             arguments:
                 ib : main Interactive Brokers interface from ib_insync, should be
                      'connected'
-                loop: asyncio event loop for concurrent screener execution
-                constituentsFile: csv file with constituents with at least 'symbol',
-                                  'Market Cap' columns
-        """
-        if ib is None:
-            print('Unable to initialize screener')
-        else:
-            self.ib = ib
-            self.loop = loop
-            self.constituentsFile = constituentsFile
-
-    def setScreenerParameters( self, dict : Dict[ str, str] ):
-        """
-            provide screening parameter dictionary
-
-            arguments:
-                dict:
-                min_market_cap:  minimum market capital in USD Millions Dollars
-                constituents_slice:    After minimum market cap ordering / filtering scan up to to this number of securities
-                min_option_volume:   minimum average daily option volume
-                min_iv_rank: min 52 weeks Implied Volatility Rank (%)
-                min_days_to_earnings:  minimum days to next earnings report
-
-                #option strategy filters
-                pct_under_px_range: .20  scan strikes under this % below market price for underlying
-                num_month_expiries: 3 monthly expires forward
-                max_loss:  max loss
-                min_profit: min profit
-        """
-        self.screenerParams = dict
-
-    def setScreenerParameters( self ):
-        """
-        """
-        pass
-
-    def loadConstituents( self ):
-        """
+                constituents: comma separated file with tickers to scan
+               filterParams: Bull Put screener parameters, see 'setFilterParameters'
+                             method for available keys
+               loop: asyncio event loop for concurrent screener execution
 
         """
-        pass
+
+        self.ib = ib
+        self.constituentsList = constituents
+        self.filterParams = filterParams
+        self.loop = loop
+
+    def setFilterParameters( self, filterParams : Dict[ str, str] ):
+        """
+        #option strategy filters
+        args:
+            filterParams: strategy filter parameters
+                - pct_under_px_range: scan strikes under this % below market price for underlying
+                - num_month_expiries: monthly expires forward
+                - max_loss:  max loss
+                - min_profit: min profit
+        """
+        self.filterParams = filterParams
+
+
+    def setConstituentsList( self, constituentsList : List[str] ):
+        """
+            args:
+                constituentsList : list of undrelying tickers to scan
+        """
+        self.constituentsList = constituentsList
 
     def executeScan( self, taskNum: int = 1 ):
         """
@@ -96,7 +87,8 @@ class BullPutScreener( ):
         Divide work in up to 'taskNum' tasks of concurrent execution
 
         arguments:
-            taskNum: number of task to divide the work among
+            taskNum: number of task to divide the work among, for now only 1
+                     working
         """
         pass
 

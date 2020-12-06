@@ -27,7 +27,9 @@
 import pytest
 import logging
 
-import screeners
+from screeners import utils
+
+from ib_insync import *
 
 @pytest.fixture( scope='module')
 def fixture():
@@ -39,18 +41,17 @@ def fixture():
     yield
     logging.info( 'test fixture post')
 
-@pytest.mark.Smoke
+@pytest.mark.Utils
 def test_Utils1(fixture):
     logging.info('unit test Utils1')
-    logging.info( f'global variable {gvar}' )
-    logging.info('infon message utils1')
-
-    #assert False
 
 
-@pytest.mark.Smoke
-def test_Utils2(fixture):
-    logging.info('unit test utils2')
-    logging.info( f'global variable {gvar}'  )
+@pytest.mark.Screener
+def test_Screener(fixture):
+    logging.info('unit test screener')
 
-    logging.info('infon message utils2')
+
+
+@pytest.mark.BullPutScreener
+def test_BullPutScreener(fixture):
+    logging.info( 'unit test bull put screener' )
