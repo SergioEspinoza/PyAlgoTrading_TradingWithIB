@@ -1,3 +1,5 @@
+#!/usr/bin/bash
+
 #Add parent directory to PYTHONPATH
 #so 'screeners' module can be imported without installing it
 if [ -z $PYTHONPATH ]; then
@@ -9,4 +11,10 @@ elif [[ ":$PYTHONPATH:" != *":$(pwd):"* ]]; then
   export PYTHONPATH="$PYTHONPATH:$(pwd)/.."
 fi
 
-pytest --log-cli-level="INFO"
+if [ -z $1 ]; then
+  echo "executing all unit tests"
+  pytest --lo-cli-level="INFO" -s
+else
+  echo "executing unit tests marked as: $1"
+  pytest --log-cli-level="INFO" -m ${1} -s
+fi

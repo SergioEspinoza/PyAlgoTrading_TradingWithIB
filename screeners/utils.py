@@ -31,13 +31,11 @@ from ib_insync import *
 import logging
 
 
-__all__ = 'Utils'
+__all__ = 'ScreenerUtils'
 
-class Utils():
+class ScreenerUtils():
     def __init__(self):
         pass
-
-    _IB : IB
 
     @classmethod
     def getSp500Constituents( cls, filename ):
@@ -82,7 +80,7 @@ class Utils():
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 
-    #for more unit tests look into test_screeners.py module in 'test' direcotry
+    #for more tests look into test_screeners.py module in 'test' direcotry
 
     print('**** Utils class unit test ****')
 

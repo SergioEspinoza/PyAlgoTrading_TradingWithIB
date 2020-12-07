@@ -27,7 +27,9 @@
 import pytest
 import logging
 
-from screeners import utils
+from screeners import ScreenerUtils
+
+import os
 
 from ib_insync import *
 
@@ -35,16 +37,37 @@ from ib_insync import *
 def fixture():
     logging.info( 'test fixture pre' )
 
-    global gvar
-    gvar = 'my variable'
+    global utils
+
+    #instance might not be used since it declares mostly
+    #class methods
+    utils = ScreenerUtils()
+
 
     yield
     logging.info( 'test fixture post')
 
 @pytest.mark.Utils
-def test_Utils1(fixture):
-    logging.info('unit test Utils1')
+@pytest.mark.Utils1
+def test_Utils_GetSp500Constituents(fixture):
+    logging.info('testing S&P 500 constituent list getter')
+    filename= input('enter s&p500 csv filename: ')
 
+    filename='output/'+filename
+    logging.info( F'saving to {filename}' )
+
+    ScreenerUtils.getSp500Constituents(filename)
+
+    assert os.path.exists( filename )
+
+    assert ( os.path.getsize( filename ) > 0 )
+
+
+@pytest.mark.Utils
+@pytest.mark.Utils2
+def test_Utils_TwsConnect(fixture):
+    logging.info( 'testing tes conenct method' )
+    #TODO
 
 @pytest.mark.Screener
 def test_Screener(fixture):
