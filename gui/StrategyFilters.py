@@ -91,7 +91,7 @@ class StrategyFilters():
         Initialize using xml subtree of 'underlyings' tag
 
         arguments
-            elementSubTree: xml 'element' including the 'strategy'
+            elementSubTree: xml 'element' including the 'strategy'ls
                             tag and its sub-tree
         """
 

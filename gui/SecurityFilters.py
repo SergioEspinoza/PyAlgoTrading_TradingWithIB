@@ -73,19 +73,14 @@ class SecurityFilters:
                         minIVRank : float = 10,
                         minDaysToEarnigns : float = 25 ):
         """
-            parameters:
+            args:
 
-            minMarketCap : minimum market capital in USD Millions Dollars
-
-            constituentsSlice: After minimum market cap ordering  and filtering
-                                scan up to to this number of securities
-
-            minOptionVolume: minimum average daily option volume
-
-            minIVRank: 52 weeks Implied Volatility Rank (%)
-
-            minDaysToEarnings: minimum days to next earnings report
-
+                minMarketCap : minimum market capital in USD Millions Dollars
+                constituentsSlice: After minimum market cap ordering  and filtering
+                                    scan up to to this number of securities
+                minOptionVolume: minimum average daily option volume
+                minIVRank: 52 weeks Implied Volatility Rank (%)
+                minDaysToEarnings: minimum days to next earnings report
         """
         self.minMarketCap = minMarketCap
         self.constituentsSlice = constituentsSlice

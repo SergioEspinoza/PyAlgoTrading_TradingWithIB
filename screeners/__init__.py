@@ -31,7 +31,7 @@
 Option screeners for different option strategies
 """
 from .screeners import BullPutScreener
-from .utils import Utils
+from .utils import ScreenerUtils
 #from .mainApp import MainWindow
 
 

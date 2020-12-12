@@ -53,7 +53,8 @@ class Screeners():
             args:
                 filterParams: Security filter parameters:
                     min_market_cap =  minimum market capital in USD Millions Dollars
-                    constituents_slice =    After minimum market cap ordering / filtering scan up to to this number of securities
+                    constituents_slice =    After minimum market cap ordering /
+                                filtering scan up to to this number of securities
                     min_option_volume =   minimum average daily option volume
                     min_iv_rank = min 52 weeks Implied Volatility Rank (%)
                     min_days_to_earnings =  minimum days to next earnings report
