@@ -35,17 +35,19 @@ from ib_insync import *
 
 @pytest.fixture( scope='module')
 def fixture():
-    logging.info( 'test fixture pre' )
 
     global utils
 
-    #instance might not be used since it declares mostly
-    #class methods
-    utils = ScreenerUtils()
-
+    logging.info( 'attempting TWS connection' )
+    global ib
+    ib = ScreenerUtils.twsConnect()
+    assert ib.isConnected(), 'Unsuccesfull TWS connection attempt!!!'
 
     yield
-    logging.info( 'test fixture post')
+    logging.info( 'disconnecting tws session!!!' )
+    ScreenerUtils.twsDisconnect()
+
+
 
 @pytest.mark.Utils
 @pytest.mark.Utils1
@@ -60,14 +62,46 @@ def test_Utils_GetSp500Constituents(fixture):
 
     assert os.path.exists( filename )
 
-    assert ( os.path.getsize( filename ) > 0 )
+    assert os.path.getsize( filename ) > 0
 
 
 @pytest.mark.Utils
 @pytest.mark.Utils2
-def test_Utils_TwsConnect(fixture):
-    logging.info( 'testing tes conenct method' )
-    #TODO
+def test_scanUnderlyings(fixture):
+
+    input( 'ScreenerUtils.scanUnderlyings() test. Enter to send request' )
+
+    underlyings = ScreenerUtils.scanHighIvRankUnderlyings(
+        minMarketCap = 5000000000,
+        minAvgOptionVolume = 5000,
+        minIvRank = 0 )
+
+    assert len( underlyings ) > 0, "unable to find underlyings"
+
+    logging.info( f'scanUnderlyings result : {underlyings}' )
+
+    input( '************ results delivered **************' )
+
+    logging.info( '{underlyings}' )
+
+@pytest.mark.Utils
+@pytest.mark.Utils3
+def test_reqScannerParameters(fixture):
+    input( 'test available scanner parameters. Enter to request' )
+
+    parameters = ScreenerUtils.reqScannerParameters()
+
+    assert len( parameters ) > 0, "error while retreiving available parameters"
+
+    logging.info(  f'***Retrieved parametrs  {len(parameters)} *****' )
+
+    file = open( "./availableParams.xml", 'w+' )
+
+    file.write( f'{parameters}' )
+
+    file.close()
+
+
 
 @pytest.mark.Screener
 def test_Screener(fixture):
