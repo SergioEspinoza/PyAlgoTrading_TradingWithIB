@@ -34,18 +34,32 @@ __all__ = [ 'Screeners',
 # add more here
 
 class Screeners():
+
+    "Available underlying screening parameters, to apply on "
+    underlyingScreeningParameters = [
+        'min_market_cap',
+        'constituents_slice',
+        'min_option_volume',
+        'min_iv_rank',
+        'min_days_to_earnings'
+    ]
+
+
+    underlyings = []
+
     def __init__( self  ):
         self.Ib = ib
         self.bullPutScreener = BullPutScreener( ib )
 
-    def setUnderlyingUniverse( self, underlyingUniverse : List[ str ] ):
+    @classmethod
+    def setUnderlyings( cls, underlyings : List[ str ] ):
         """
             args:
-                underlyingUniverse : Ticker list of underlying to scan with
+                underlyings : Ticker list of underlying to scan with
                     unrelyingFilterParams. This could be, for example, the
                     entire S&P500 index constituents
         """
-        self.underlyingUniverse = underlyingUniverse
+        cls.underlyings = underlyings
 
     def setUnderlyingScannerParameters( self, filterParams : Dict[ str, float] ):
         """
@@ -59,9 +73,13 @@ class Screeners():
                     min_iv_rank = min 52 weeks Implied Volatility Rank (%)
                     min_days_to_earnings =  minimum days to next earnings report
         """
+        for (key, value) in filterParams:
+            if key not in underlyingScreeningParameters:
+                assert False, f'underlying screener key {key} not supported!!!'
+
         self.underlyingScreenerParams = dict
 
-    def setBullPutSccreenerParameters( self, filterParams : Dict[str,str]  ):
+    def setBullPutScreenerParameters( self, filterParams : Dict[str,str]  ):
         """
             Set bull put screener parameters
             List of parameters available in 'bullputverticals_scr' file
