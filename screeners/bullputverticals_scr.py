@@ -21,9 +21,6 @@
 
     Bull put vertical screening through Interactive Brokers using ib_insync
 
-    Asumes csv file with sp500 constituents tickers and Market Capital
-    is available
-
     Should be able to provide concurrent execution of the main algorithm
     while being able to configure the number of concurrent tasks.
 

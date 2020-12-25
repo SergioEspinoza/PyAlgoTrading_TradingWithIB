@@ -25,6 +25,9 @@
 from typing import Dict, List
 
 from .bullputverticals_scr import BullPutScreener
+from .utils import ScreenerUtils
+
+import logging
 
 from ib_insync import *
 
@@ -36,7 +39,7 @@ __all__ = [ 'Screeners',
 class Screeners():
 
     "Available underlying screening parameters, to apply on "
-    underlyingScreeningParameters = [
+    _underlyingScreeningAvailParameters = [
         'min_market_cap',
         'constituents_slice',
         'min_option_volume',
@@ -45,7 +48,7 @@ class Screeners():
     ]
 
 
-    underlyings = []
+    _underlyings = []
 
     def __init__( self, ib : IB ):
         self._Ib = ib
@@ -74,11 +77,11 @@ class Screeners():
                     { 'constituents_slice' : float }  cap number of securities to scan after all other
                                                      filters have been run
         """
-        for (key, value) in filterParams:
-            if key not in underlyingScreeningParameters:
+        for (key, value) in filterParams.items():
+            if key not in self._underlyingScreeningAvailParameters:
                 assert False, f'underlying screener key {key} not supported!!!'
 
-        self.underlyingScreenerParams = dict
+        self.underlyingScreenerParams = filterParams
 
     def setBullPutScreenerParameters( self, filterParams : Dict[str,str]  ) -> List[str]:
         """
@@ -112,7 +115,7 @@ class Screeners():
             logging.error( e )
 
         if 'constituents_slice' in self.underlyingScreenerParams.keys():
-            slice = Int( self.underlyingScreenerParams[ 'constituents_slice' ] )
+            slice = int( self.underlyingScreenerParams[ 'constituents_slice' ] )
             symbolList = symbolList[:slice]
 
         return symbolList

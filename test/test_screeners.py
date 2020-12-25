@@ -112,16 +112,17 @@ def test_Screener(fixture):
     securityFilters = {
         'min_market_cap' : 5000000000,
         'min_option_volume' : 5000,
+        'min_iv_rank' : 20,
         'constituents_slice' : 20}
 
-    screeners = Screeners()
+    screeners = Screeners( ib )
 
-    screeners.setSecurityFilters( securityFilters )
+    screeners.setUnderlyingScannerParameters( securityFilters )
         #TODO: add 'min days to expiration'
 
-    symbolList = screeners.executeScan()
+    symbolList = screeners.executeUnderlyingScan(  )
 
-    assert symbolList > 0, 'NO SYMBOLS FOUND!!'
+    assert len(symbolList) > 0, 'NO SYMBOLS FOUND!!'
 
     logging.info( f'{symbolList}' )
 

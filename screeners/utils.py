@@ -107,7 +107,7 @@ class ScreenerUtils():
     def scanHighIvRankUnderlyings( cls,  minMarketCap : float = None, minAvgOptionVolume : float = None,
                     minIvRank : float = None ) -> List[str]:
         """
-            Scan for contracts in the 'IV_RANK52' scanner list. Any argument not
+            Scan for contracts in the 'SCAN_ivRank52w_ASC' scanner code. Any argument not
             given it will be ignored. Needs at least one parameter.
 
             args:
@@ -118,7 +118,7 @@ class ScreenerUtils():
         sub = ScannerSubscription(
                 instrument='STK',
                 locationCode='STK.US.MAJOR',
-                scanCode = 'SCAN_ivRank52w_ASC',
+                scanCode = 'SCAN_ivRank52w_DESC',
                 marketCapAbove = minMarketCap,
                 averageOptionVolumeAbove = minAvgOptionVolume )
 
