@@ -19,18 +19,15 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
     THE SOFTWARE.
 
-    Bull put vertical screening through Interactive Brokers using ib_insync
-
-    Asumes csv file with sp500 constituents tickers and Market Capital
-    is available
+    Option strategy screening on Interactive Brokers using 'ib_insync'
 
     Should be able to provide concurrent execution of the main algorithm
     while being able to configure the number of concurrent tasks.
 
 
-Option screeners for different option strategies
+    Option screeners for different option strategies
 """
-from .screeners import BullPutScreener
+from .screeners import Screeners
 from .utils import ScreenerUtils
 #from .mainApp import MainWindow
 

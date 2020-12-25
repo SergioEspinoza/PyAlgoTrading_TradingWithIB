@@ -28,6 +28,7 @@ import pytest
 import logging
 
 from screeners import ScreenerUtils
+from screeners import Screeners
 
 import os
 
@@ -104,9 +105,25 @@ def test_reqScannerParameters(fixture):
 
 
 @pytest.mark.Screener
+@pytest.mark.Screener1
 def test_Screener(fixture):
     logging.info('unit test screener')
 
+    securityFilters = {
+        'min_market_cap' : 5000000000,
+        'min_option_volume' : 5000,
+        'constituents_slice' : 20}
+
+    screeners = Screeners()
+
+    screeners.setSecurityFilters( securityFilters )
+        #TODO: add 'min days to expiration'
+
+    symbolList = screeners.executeScan()
+
+    assert symbolList > 0, 'NO SYMBOLS FOUND!!'
+
+    logging.info( f'{symbolList}' )
 
 
 @pytest.mark.BullPutScreener

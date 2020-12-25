@@ -107,7 +107,7 @@ class ScreenerUtils():
     def scanHighIvRankUnderlyings( cls,  minMarketCap : float = None, minAvgOptionVolume : float = None,
                     minIvRank : float = None ) -> List[str]:
         """
-            Scan for contracts that comply with given parameters. If parameter is not
+            Scan for contracts in the 'IV_RANK52' scanner list. Any argument not
             given it will be ignored. Needs at least one parameter.
 
             args:

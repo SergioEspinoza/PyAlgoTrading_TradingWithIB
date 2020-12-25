@@ -47,9 +47,10 @@ class Screeners():
 
     underlyings = []
 
-    def __init__( self  ):
-        self.Ib = ib
-        self.bullPutScreener = BullPutScreener( ib )
+    def __init__( self, ib : IB ):
+        self._Ib = ib
+        self.underlyingScreenerParams = None
+        #self.bullPutScreener = BullPutScreener( ib )
 
     @classmethod
     def setUnderlyings( cls, underlyings : List[ str ] ):
@@ -66,12 +67,12 @@ class Screeners():
             provide screening parameter dictionary
             args:
                 filterParams: Security filter parameters:
-                    min_market_cap =  minimum market capital in USD Millions Dollars
-                    constituents_slice =    After minimum market cap ordering /
-                                filtering scan up to to this number of securities
-                    min_option_volume =   minimum average daily option volume
-                    min_iv_rank = min 52 weeks Implied Volatility Rank (%)
-                    min_days_to_earnings =  minimum days to next earnings report
+                    {'min_market_cap' : float }    minimum market capital in USD Millions Dollars
+                    { 'min_option_volume' : float }    minimum average daily option volume
+                    { 'min_iv_rank' : float }  min 52 weeks Implied Volatility Rank (%)
+                    { 'min_days_to_earnings' : float }  minimum days to next earnings report
+                    { 'constituents_slice' : float }  cap number of securities to scan after all other
+                                                     filters have been run
         """
         for (key, value) in filterParams:
             if key not in underlyingScreeningParameters:
@@ -79,7 +80,7 @@ class Screeners():
 
         self.underlyingScreenerParams = dict
 
-    def setBullPutScreenerParameters( self, filterParams : Dict[str,str]  ):
+    def setBullPutScreenerParameters( self, filterParams : Dict[str,str]  ) -> List[str]:
         """
             Set bull put screener parameters
             List of parameters available in 'bullputverticals_scr' file
@@ -87,8 +88,35 @@ class Screeners():
         self.bullPutScreener.setFilterParameters( filterParams )
 
     def executeUnderlyingScan( self ):
-        logging.info( "Executing underlying scanner" )
-        #TODO
+
+        logging.info( "** Executing underlying scanner **" )
+
+        try:
+            minMarketCap = self.underlyingScreenerParams[ 'min_market_cap' ]
+            minAvgOptionVolume = self.underlyingScreenerParams[ 'min_option_volume' ]
+            minIvRank = self.underlyingScreenerParams[ 'min_iv_rank' ]
+
+        except KeyError:
+            logging.error( 'Missing scanner parameter' )
+
+        #TODO: add min days to earnings
+        #self.underlyingScreenerParams[ 'min_days_to_earnings' ]
+
+        try:
+            # use IV rank scan / filter
+            symbolList = ScreenerUtils.scanHighIvRankUnderlyings( minMarketCap,
+            minAvgOptionVolume,
+            minIvRank )
+
+        except Exception as e:
+            logging.error( e )
+
+        if 'constituents_slice' in self.underlyingScreenerParams.keys():
+            slice = Int( self.underlyingScreenerParams[ 'constituents_slice' ] )
+            symbolList = symbolList[:slice]
+
+        return symbolList
+
 
     def runBullPutScreener( self ):
         logging.info( "Executing bull put stratery screener" )
