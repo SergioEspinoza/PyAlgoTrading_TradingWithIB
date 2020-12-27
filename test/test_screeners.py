@@ -42,7 +42,7 @@ def fixture():
     logging.info( 'attempting TWS connection' )
     global ib
     ib = ScreenerUtils.twsConnect()
-    assert ib.isConnected(), 'Unsuccesfull TWS connection attempt!!!'
+    assert ib.isConnected(), 'Unsuccessfull TWS connection attempt!!!'
 
     yield
     logging.info( 'disconnecting tws session!!!' )
@@ -113,19 +113,26 @@ def test_Screener(fixture):
         'min_market_cap' : 5000000000,
         'min_option_volume' : 5000,
         'min_iv_rank' : 20,
+        'min_days_to_earnings' : 30,
         'constituents_slice' : 20}
 
     screeners = Screeners( ib )
 
+    screeners.setErrorEventHandler( pyTestIbErrorHandler )
+
     screeners.setUnderlyingScannerParameters( securityFilters )
-        #TODO: add 'min days to expiration'
 
-    symbolList = screeners.executeUnderlyingScan(  )
+    contractList = screeners.executeUnderlyingScan(  )
 
-    assert len(symbolList) > 0, 'NO SYMBOLS FOUND!!'
+    assert len(contractList) > 0, 'NO SYMBOLS FOUND!!'
 
-    logging.info( f'{symbolList}' )
+    logging.info( '*** Contracts found *** ' )
+    logging.info( f'{contractList}' )
 
+
+def pyTestIbErrorHandler(  id : int, errorCode : int, errorMsg : str, c : Contract  ):
+    logging.info( '***** ERROR RECEIVED IN PYTEST ERROR HANDLER!!! *****' )
+    logging.info( f'id: {id} , errorCode: {errorCode}, errorMsg : {errorMsg}' )
 
 @pytest.mark.BullPutScreener
 def test_BullPutScreener(fixture):

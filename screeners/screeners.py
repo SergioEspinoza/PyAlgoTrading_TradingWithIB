@@ -39,7 +39,7 @@ __all__ = [ 'Screeners',
 class Screeners():
 
     "Available underlying screening parameters, to apply on "
-    _underlyingScreeningAvailParameters = [
+    _underlyingScreenerAvailParameters = [
         'min_market_cap',
         'constituents_slice',
         'min_option_volume',
@@ -78,7 +78,7 @@ class Screeners():
                                                      filters have been run
         """
         for (key, value) in filterParams.items():
-            if key not in self._underlyingScreeningAvailParameters:
+            if key not in self._underlyingScreenerAvailParameters:
                 assert False, f'underlying screener key {key} not supported!!!'
 
         self.underlyingScreenerParams = filterParams
@@ -90,20 +90,24 @@ class Screeners():
         """
         self.bullPutScreener.setFilterParameters( filterParams )
 
-    def executeUnderlyingScan( self ):
+    def executeUnderlyingScan( self ) -> List[Contract]:
 
-        logging.info( "** Executing underlying scanner **" )
+        logging.info( "** Executing underlying scan **" )
 
         try:
             minMarketCap = self.underlyingScreenerParams[ 'min_market_cap' ]
             minAvgOptionVolume = self.underlyingScreenerParams[ 'min_option_volume' ]
             minIvRank = self.underlyingScreenerParams[ 'min_iv_rank' ]
+            minDaysToEarnigns = self.underlyingScreenerParams[ 'min_days_to_earnings' ]
+
+            logging.info( f'First screening criteria: ' )
+            logging.info( f'Minimum market capital: {minMarketCap} ' )
+            logging.info( f'Minimum Avg Option Vol: {minMarketCap} ' )
+            logging.info( f'Minimum IV rank: {minMarketCap} ' )
+
 
         except KeyError:
             logging.error( 'Missing scanner parameter' )
-
-        #TODO: add min days to earnings
-        #self.underlyingScreenerParams[ 'min_days_to_earnings' ]
 
         try:
             # use IV rank scan / filter
@@ -114,12 +118,30 @@ class Screeners():
         except Exception as e:
             logging.error( e )
 
+        #build / qualify contracts
+        contracts = [ Stock( s, 'SMART' , currency='USD' ) for s in symbolList ]
+
+        qualifiedContracts = self._Ib.qualifyContracts( *contracts )
+
+        assert len(qualifiedContracts) == len(contracts), 'unable to qualify all contracts'
+
+        logging.info(f'{len(qualifiedContracts)} contracts qualify first screening criteria' )
+        # filter out 'min_days_to_earnings',
+        # 'Wall Street Horizon' subscription needed
+
+        logging.info( f'Next screening criteria:' )
+        logging.info( f'Minimum days to next earning report : {minDaysToEarnigns} ' )
+
+        contractList = ScreenerUtils.filterByUpcomingEarnings( qualifiedContracts, minDaysToEarnigns )
+
         if 'constituents_slice' in self.underlyingScreenerParams.keys():
             slice = int( self.underlyingScreenerParams[ 'constituents_slice' ] )
-            symbolList = symbolList[:slice]
+            contractList = contractList[:slice]
 
-        return symbolList
+        return contractList
 
+    def setErrorEventHandler( self, handler ):
+        self._Ib.errorEvent += handler
 
     def runBullPutScreener( self ):
         logging.info( "Executing bull put stratery screener" )

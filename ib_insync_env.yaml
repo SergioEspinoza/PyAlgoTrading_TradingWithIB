@@ -140,7 +140,7 @@ dependencies:
     - docutils==0.15.2
     - et-xmlfile==1.0.1
     - eventkit==0.8.6
-    - ib-insync==0.9.59
+    - ib-insync==0.9.64
     - idna==2.9
     - ijson==3.0.4
     - isodate==0.6.0

@@ -30,9 +30,11 @@ from typing import List
 
 from ib_insync import *
 
+from datetime import datetime, timedelta
+
 import logging
 
-
+import xml.etree.ElementTree as ET
 
 __all__ = 'ScreenerUtils'
 
@@ -48,7 +50,7 @@ class ScreenerUtils():
     def getSp500Constituents( cls, filename ):
         """
         get S&P500 constituents via datahub.io Package, store to file
-            args:
+            Args:
                 filename : name of csv file (output from datahub.io)
 
         """
@@ -82,7 +84,7 @@ class ScreenerUtils():
             in additional column. If minMarketCap is defined, filter by
             market capital, marketCapColumnName argument needs to be provided
 
-            args:
+            Args:
                 filename : csv filename, at least one column should have
                         symbol names
                 symbolColumnName: ticker column name
@@ -110,7 +112,7 @@ class ScreenerUtils():
             Scan for contracts in the 'SCAN_ivRank52w_ASC' scanner code. Any argument not
             given it will be ignored. Needs at least one parameter.
 
-            args:
+            Args:
                 minMarketCap : minimum market capital in USD$ Million
                 minAvgOptionVolume : minimum daily average option volume
                 minIvRank: minimum iv rank
@@ -130,8 +132,48 @@ class ScreenerUtils():
 
         return symbolList
 
-        #TODO: look for min 52 week IV rank, in 'reqScannerParameters()'
-        # output
+    @classmethod
+    def filterByUpcomingEarnings( cls, contractList : List[ Contract ],
+    minDaysToEarnigns : int ) -> List[Contract]:
+        """
+        Filter US 'stock' contracts based on earning report. Query their
+        next earning report and filter out based on 'minDaysToEarnigns' parameter.
+        (Filter out if earning report happens sooner). Contracts whould be
+        qualified already
+            Args:
+                symbolList : List of symbols to filter
+                minDaysToEarnigns : minimum number of days until next earning report
+            Return:
+                List of filtered contracts
+        """
+
+        assert minDaysToEarnigns > 0
+        assert minDaysToEarnigns < 90
+
+
+        filteredContracts = []
+
+        clearEarningsDate = datetime.now() + timedelta( days = minDaysToEarnigns )
+        #request fundamental data
+        for c in contractList:
+            logging.info( f'requesting fundamental data for {c.symbol}' )
+
+            try:
+                xmlString = cls._ib.reqFundamentalData( c, 'CalendarReport' )
+
+                xmlroot = ET.fromstring( xmlString )
+
+                for earningNode in xmlroot.iter( 'Earnings' ):
+                    dateNode = earningNode.find( 'Date' )
+                    earningsDate = pd.to_datetime( dateNode.text )
+
+                    if( earningsDate < clearEarningsDate ):
+                        filteredContracts.append( c )
+
+            except Exception:
+                xmlString = None
+
+        return filteredContracts
 
     @classmethod
     def reqScannerParameters( cls ) -> List[str]:
@@ -144,7 +186,7 @@ class ScreenerUtils():
     def twsConnect( cls, host : str = '127.0.0.1', port : int = 7497, client: int = 25 ) -> IB:
         """
         Connect to TWS API via 'IB.connect' method, register disconnection handler
-        args:
+        Args:
             ip : IB gateway IP Address
             port: connection tcp port
             client: client number / id
@@ -159,6 +201,8 @@ class ScreenerUtils():
         cls._ib.disconnectedEvent += cls.onIbDisconnected
 
         cls._ib.connect( host, port, client,readonly=True )
+
+        cls._ib.RaiseRequestErrors = False
 
         return cls._ib
 
