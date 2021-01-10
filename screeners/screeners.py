@@ -47,8 +47,15 @@ class Screeners():
         'min_days_to_earnings'
     ]
 
+    _commonStrategyScreenerAvailParameters = [
+        'pct_px_range',
+        'num_month_expiries',
+        'max_loss',
+        'min_profit'
+    ]
 
-    _underlyings = []
+    _underlyingContracts = None
+
 
     def __init__( self, ib : IB ):
         self._Ib = ib
@@ -56,20 +63,20 @@ class Screeners():
         #self.bullPutScreener = BullPutScreener( ib )
 
     @classmethod
-    def setUnderlyings( cls, underlyings : List[ str ] ):
+    def setUnderlyings( cls, underlyingContracts : List[ Contract ] ):
         """
-            args:
-                underlyings : Ticker list of underlying to scan with
-                    unrelyingFilterParams. This could be, for example, the
-                    entire S&P500 index constituents
+            Args:
+                underlyings : Contract list of underlying to scan using
+                    option strategy screemner algorithm .
+                    Contracts can be scanned using 'executeUnderlyingScan'
         """
-        cls.underlyings = underlyings
+        cls._underlyingContracts = underlyingContracts
 
     def setUnderlyingScannerParameters( self, filterParams : Dict[ str, float] ):
         """
             provide screening parameter dictionary
-            args:
-                filterParams: Security filter parameters:
+            Args:
+                filterParams: Dictionary with security filter parameters, with key/value pairs:
                     {'min_market_cap' : float }    minimum market capital in USD Millions Dollars
                     { 'min_option_volume' : float }    minimum average daily option volume
                     { 'min_iv_rank' : float }  min 52 weeks Implied Volatility Rank (%)
@@ -83,12 +90,21 @@ class Screeners():
 
         self.underlyingScreenerParams = filterParams
 
-    def setBullPutScreenerParameters( self, filterParams : Dict[str,str]  ) -> List[str]:
+    def setCommmonStrategyScreenerParameters( self, filterParams : Dict[str,str]  ) -> List[str]:
         """
-            Set bull put screener parameters
-            List of parameters available in 'bullputverticals_scr' file
+            Set option strategy screener parameters common to all available strategies
+            Parameters will be set to every availablea option strategy screeners
+            Args:
+                filterParams: Dictionary, strategy filter parameters, with key/value pairs:
+                {"pct_under_px_range" : float } scan strikes under this % below market price for underlying
+                {"num_month_expiries" : float } monthly expires forward
+                {"max_loss" : float }  max loss
+                {"min_profit" : float }  min profit
         """
-        self.bullPutScreener.setFilterParameters( filterParams )
+        self._optionStrategyScreenerAvailParameters = filterParams
+        for (key, value) in filterParams.items():
+            if key not in self._commonStrategyScreenerAvailParameters:
+                assert False, f'strategy screener key {key} not supported!!!'
 
     def executeUnderlyingScan( self ) -> List[Contract]:
 
@@ -143,6 +159,6 @@ class Screeners():
     def setErrorEventHandler( self, handler ):
         self._Ib.errorEvent += handler
 
-    def runBullPutScreener( self ):
+    def executeBullPutScan( self ):
         logging.info( "Executing bull put stratery screener" )
         #TODO

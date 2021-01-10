@@ -206,6 +206,33 @@ class ScreenerUtils():
 
         return cls._ib
 
+
+    @classmethod
+    def reqOptionChains( cls, contracts : List[ Contract ],
+                              pct_px_range : int,
+                              num_month_expiries : int ) -> Dict[ str, List[ OptionChain ] ]:
+        """
+        Request option chains for underlyings in contract list.
+        Option chains will be filtered out if exchange is not 'SMART' as well as  strike /
+        expiration combinations based on function arguments.
+        Args:
+            contracts : List of contracts to request options chains for.
+            pct_px_range : maximum allowed strike variation (%) around current market price
+            num_month_expiries : maximum number of monthly expiries to look for (in the future).
+                                 weekly expirations earlier than last month will be included.
+        Returns: { symbol : 'List[OptionChain]' } where 'List' are the option chains for 'symbol',
+         strikes and expirations filtered based on provided arguments.
+         Option chain object memebers defined (as in ib_insync):
+            exchange: option chains belonging to 'SMART' exchange only
+            underlyingConId: underlying contract
+            tradingClass: the option trading class
+            multiplier: the option multiplier
+            expirations : filtered out according to 'num_month_expiries'
+            strikes : filtered out according to 'pct_px_range'
+        """
+
+
+
     @classmethod
     def twsDisconnect( cls ):
         cls._ib.disconnect()
