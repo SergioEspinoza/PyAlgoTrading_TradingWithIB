@@ -26,7 +26,7 @@ Utility functions for session management, security scanning and more
 from datapackage import Package
 import pandas as pd
 
-from typing import List
+from typing import List, Dict
 
 from ib_insync import *
 
@@ -230,6 +230,47 @@ class ScreenerUtils():
             expirations : filtered out according to 'num_month_expiries'
             strikes : filtered out according to 'pct_px_range'
         """
+
+        #get unfiltered chains
+        chains = { c.symbol : cls._ib.reqSecDefOptParams( c.symbol, '', c.secType, c.conId ) for c in contracts  }
+
+        #leave only 'SMART' exchange chains (should be one per contract)
+        chains = { symbol : [ c for c in chainList if c.exchange == 'SMART'  ] for ( symbol, chainList )  in chains.items() }
+        chains = { s : c[0] for ( s, c ) in chains.items() }
+
+        #prepare datetime for expiration filtering
+        curdate = datetime.now()
+        delta_forward = timedelta( weeks = num_month_expiries*4 )
+        option_expiration_limit = curdate + delta_forward
+
+        #get tickers
+        tickers = cls._ib.reqTickers( *contracts )
+
+        logging.info( f"Retrieved {len(tickers)} contract tickers (snapshot)" )
+
+        tickerDict = { t.contract.symbol : t for t in tickers }
+
+        adjustedChains = {}
+        #filter strikes by pct_px_range and expirations by num_month_expiries
+        for ( symbol, chain ) in chains.items():
+
+            curPrice = tickerDict[symbol].marketPrice()
+
+            newstrikes = [ s for s in chain.strikes if s > ( curPrice * ( 1 - pct_px_range ) ) and s <= curPrice ]
+
+            newexpirations = [ e for e in chain.expirations if pd.to_datetime(e) < option_expiration_limit ]
+
+            #OptionChain is 'NamedTuple' (not mutable)
+            adjustedChain = OptionChain( chain.exchange,
+                                    chain.underlyingConId,
+                                    chain.tradingClass,
+                                    chain.multiplier,
+                                    newexpirations,
+                                    newstrikes )
+
+            adjustedChains.update( { symbol : adjustedChain } )
+
+        return adjustedChains
 
 
 

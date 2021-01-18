@@ -129,6 +129,39 @@ def test_Screener(fixture):
     logging.info( '*** Contracts found *** ' )
     logging.info( f'{contractList}' )
 
+@pytest.mark.Utils
+@pytest.mark.Utils4
+def test_OptionChainsReq(fixture):
+    logging.info('testing option chain request')
+
+    securityFilters = {
+        'min_market_cap' : 30000000000,
+        'min_option_volume' : 10000,
+        'min_iv_rank' : 30,
+        'min_days_to_earnings' : 30,
+        'constituents_slice' : 20}
+
+    screeners = Screeners( ib )
+
+    screeners.setErrorEventHandler( pyTestIbErrorHandler )
+
+    screeners.setUnderlyingScannerParameters( securityFilters )
+
+    contractList = screeners.executeUnderlyingScan(  )
+
+    logging.info( f'***Retrieved {len(contractList)} contracts after underlying scan***' )
+
+    logging.info( f'***Requesting option chains for {[ c.symbol for c in contractList ]} *** ')
+
+    chains = ScreenerUtils.reqOptionChains( contractList, 10, 3 )
+
+    logging.info( f'*** succesfuly retrieved {len(chains.items())} chains ***' )
+
+    sampleKey =  list(chains.keys())
+
+    logging.info( f'Sample option chain for { sampleKey[0] } : {chains[ sampleKey[0] ] }' )
+
+
 
 def pyTestIbErrorHandler(  id : int, errorCode : int, errorMsg : str, c : Contract  ):
     logging.info( '***** ERROR RECEIVED IN PYTEST ERROR HANDLER!!! *****' )
