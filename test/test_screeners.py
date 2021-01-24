@@ -153,7 +153,7 @@ def test_OptionChainsReq(fixture):
 
     logging.info( f'***Requesting option chains for {[ c.symbol for c in contractList ]} *** ')
 
-    chains = ScreenerUtils.reqOptionChains( contractList, 10, 3 )
+    chains = ScreenerUtils.reqOptionChains( contractList, pct_px_range = 10, num_month_expiries = 3 )
 
     logging.info( f'*** succesfuly retrieved {len(chains.items())} chains ***' )
 

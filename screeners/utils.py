@@ -256,7 +256,7 @@ class ScreenerUtils():
 
             curPrice = tickerDict[symbol].marketPrice()
 
-            newstrikes = [ s for s in chain.strikes if s > ( curPrice * ( 1 - pct_px_range ) ) and s <= curPrice ]
+            newstrikes = [ s for s in chain.strikes if s >= ( curPrice * ( 1 - ( pct_px_range / 100 ) ) ) and s <= ( curPrice * ( 1 + ( pct_px_range / 100 )  ) ) ]
 
             newexpirations = [ e for e in chain.expirations if pd.to_datetime(e) < option_expiration_limit ]
 
