@@ -38,27 +38,40 @@ import logging
 
 
 class BullPutScreener( ):
+
+    """
+        These parameters are also shared with other strategies.
+        No other parameters defined so far
+    """
+    _bullPutStrategyScreenerAvailParameters = [
+        'pct_px_range',
+        'num_month_expiries',
+        'max_loss',
+        'min_profit'
+    ]
+
+
     def __init__( self, ib: IB = None,
-                  constituents: List[ str ] = None,
-                  filterParams : Dict[ str, float ] = None,
+                  underlyingContracts: List[ str ] = None,
+                  strategyScannerParams : Dict[ str, float ] = None,
                    loop = None ):
         """ 
             arguments:
                 ib : main Interactive Brokers interface from ib_insync, should be
                      'connected'
                 constituents: comma separated file with tickers to scan
-               filterParams: Bull Put screener parameters, see 'setFilterParameters'
+               strategyFilterParams: Bull Put screener parameters, see 'setFilterParameters'
                              method for available keys
                loop: asyncio event loop for concurrent screener execution
 
         """
 
         self.ib = ib
-        self.constituentsList = constituents
-        self.filterParams = filterParams
+        self._underlyingContracts = underlyingContracts
+        self._scannerParams = strategyScannerParams
         self.loop = loop
 
-    def setFilterParameters( self, filterParams : Dict[ str, str] ):
+    def setScannerParameters( self, scannerParams : Dict[ str, str] ):
         """
         #option strategy filters
         args:
@@ -68,17 +81,23 @@ class BullPutScreener( ):
                 - max_loss:  max loss
                 - min_profit: min profit
         """
-        self.filterParams = filterParams
+
+        for (key,value) in self._scannerParams.items():
+            if value not in self._bullPutStrategyScreenerAvailParameters:
+                logging.warning( f'{key} parameter not avilable for bull put screener' )
+
+        self._scannerParams = scannerParams
 
 
-    def setConstituentsList( self, constituentsList : List[str] ):
+    def setUnderlyingContracts( self, underlyingContracts : List[Contract] ):
         """
             args:
                 constituentsList : list of undrelying tickers to scan
         """
-        self.constituentsList = constituentsList
 
-    def executeScan( self, taskNum: int = 1 ):
+        self._underlyingContracts = constituentsList
+
+    def execute( self, taskNum: int = 1 ) -> List[Contract]:
         """
         Execute bull put screening algorithm.
         Divide work in up to 'taskNum' tasks of concurrent execution
@@ -86,8 +105,13 @@ class BullPutScreener( ):
         arguments:
             taskNum: number of task to divide the work among, for now only 1
                      working
+
+        returns:
+            list of 'combo' contracts that match the criteria
         """
-        pass
+        logging.info( "bull put screener execution start!" )
+
+
 
 if __name__ == "main":
     logging.info('Runnning bullputvertical_scr test')

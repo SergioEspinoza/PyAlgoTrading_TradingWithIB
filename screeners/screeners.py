@@ -38,7 +38,9 @@ __all__ = [ 'Screeners',
 
 class Screeners():
 
-    "Available underlying screening parameters, to apply on "
+    """
+    Available underlying screening parameters, to apply on all strategies
+    """
     _underlyingScreenerAvailParameters = [
         'min_market_cap',
         'constituents_slice',
@@ -62,15 +64,14 @@ class Screeners():
         self.underlyingScreenerParams = None
         #self.bullPutScreener = BullPutScreener( ib )
 
-    @classmethod
-    def setUnderlyings( cls, underlyingContracts : List[ Contract ] ):
+    def setUnderlyings( self, underlyingContracts : List[ Contract ] ):
         """
             Args:
                 underlyings : Contract list of underlying to scan using
                     option strategy screemner algorithm .
                     Contracts can be scanned using 'executeUnderlyingScan'
         """
-        cls._underlyingContracts = underlyingContracts
+        self._underlyingContracts = underlyingContracts
 
     def setUnderlyingScannerParameters( self, filterParams : Dict[ str, float] ):
         """
@@ -90,9 +91,9 @@ class Screeners():
 
         self.underlyingScreenerParams = filterParams
 
-    def setCommmonStrategyScreenerParameters( self, filterParams : Dict[str,str]  ) -> List[str]:
+    def setStrategyScreenerParameters( self, strategyParams : Dict[str,str]  ) -> List[str]:
         """
-            Set option strategy screener parameters common to all available strategies
+            Set *COMMON* option strategy screener parameter, which can be set to all available strategies
             Parameters will be set to every availablea option strategy screeners
             Args:
                 filterParams: Dictionary, strategy filter parameters, with key/value pairs:
@@ -101,10 +102,12 @@ class Screeners():
                 {"max_loss" : float }  max loss
                 {"min_profit" : float }  min profit
         """
-        self._optionStrategyScreenerAvailParameters = filterParams
-        for (key, value) in filterParams.items():
+        for (key, value) in filterParams.strategyParams():
             if key not in self._commonStrategyScreenerAvailParameters:
                 assert False, f'strategy screener key {key} not supported!!!'
+
+        self._strategyScreenerParameters = strategyParams
+
 
     def executeUnderlyingScan( self ) -> List[Contract]:
 
@@ -154,6 +157,9 @@ class Screeners():
             slice = int( self.underlyingScreenerParams[ 'constituents_slice' ] )
             contractList = contractList[:slice]
 
+        #set underlyings
+        self._underlyingContracts = underlyingContracts
+
         return contractList
 
     def setErrorEventHandler( self, handler ):
@@ -161,4 +167,9 @@ class Screeners():
 
     def executeBullPutScan( self ):
         logging.info( "Executing bull put stratery screener" )
-        #TODO
+        self.bullput_scr = BullPutScreener( ib=self._Ib,
+                                            underlyingContracts = self._underlyingContracts,
+                                            strategyScannerParams = self._commonStrategyScreenerAvailParameters,
+                                            loop = None )
+
+        self.bullput_scr.execute()
