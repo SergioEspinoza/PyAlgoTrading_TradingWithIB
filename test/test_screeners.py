@@ -165,6 +165,9 @@ def test_OptionChainsReq(fixture):
 @pytest.mark.Screener
 @pytest.mark.Screener2
 def test_BullPutScreener(fixture):
+    contractList = []
+    comboList = []
+
     logging.info( 'testgin bull put screener' )
 
 
@@ -181,9 +184,16 @@ def test_BullPutScreener(fixture):
 
     screeners.setUnderlyingScannerParameters( securityFilters )
 
-    contractList = screeners.executeUnderlyingScan(  )
+    contractList = screeners.executeUnderlyingScan( )
 
-    
+    logging.info( f"{len(ContractList)} unerlying contracts retreived" )
+
+    comboList = screeners.executeBullPutScan( )
+
+    logging.info( f"screener result with {len(comboList)} combo contracts" )
+
+
+
 
 
 
